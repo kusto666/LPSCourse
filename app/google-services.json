@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "69299933462",
+    "firebase_url": "https://mygpsone-kusto1.firebaseio.com",
+    "project_id": "mygpsone-kusto1",
+    "storage_bucket": "mygpsone-kusto1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:69299933462:android:3131810c1ff64f8c",
+        "android_client_info": {
+          "package_name": "com.dlkustovmylocatorgps.dmitry.mygpsone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "69299933462-vm7ieb3t8oc02c100hvqk0rubfkfo04h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGpNuHCsH5j4x_O5xqATfrpygi-SYaTXA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

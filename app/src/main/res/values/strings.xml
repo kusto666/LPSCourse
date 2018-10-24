@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">MyGPSOne</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Настройки1</string>
+    <string name="action_settings2">Настройки2</string>
+    <string name="action_settings3">Настройки3</string>
+    <string name="action_map">Карта</string>
+    <string name="action_points">Отметки</string>
+    <string name="action_tasks">Задачи</string>
+    <string name="action_tracks">Трек</string>
+    <string name="action_messages">Сообщения</string>
+    <string name="action_controls">Управление</string>
+    <string name="action_controls_settings">Настройки</string>
+    <string name="action_exit">Выход</string>
+    <string name="hint">hint</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_main4">Main4Activity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
+
