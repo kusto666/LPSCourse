@@ -5,6 +5,7 @@ public class CMessages {
     public String msg_body;
     public String msg_time;
     public String msg_status;
+    private String m_IdMessage;// Уникальный id для сообщения!
 
     public CMessages()
     {
