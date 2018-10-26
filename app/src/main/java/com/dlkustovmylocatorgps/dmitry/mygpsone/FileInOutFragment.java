@@ -15,7 +15,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -41,7 +43,11 @@ public class FileInOutFragment extends Fragment
     FirebaseStorage storage;
     StorageReference storageReference;
 
+    private String PATH_NAME_UPLOADS_MAIN = "uploads/";
+
+    private String m_stFileName;
     private Button btnChoose, btnUpload;
+    private EditText editTextName;
     private ImageView imageView;
 
     private Uri filePath;
@@ -58,6 +64,7 @@ public class FileInOutFragment extends Fragment
         btnChoose = (Button)retView.findViewById(R.id.btnChoose);
         btnUpload = (Button)retView.findViewById(R.id.btnUpload);
         imageView = (ImageView)retView.findViewById(R.id.imgView);
+        editTextName = (EditText) retView.findViewById(R.id.editTextName);
 
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
@@ -101,6 +108,8 @@ public class FileInOutFragment extends Fragment
         if(requestCode == PICK_IMAGE_REQUEST /*&& resultCode == RESULT_OK */&& data != null && data.getData() != null )
         {
             filePath = data.getData();
+            m_stFileName = data.getData().getLastPathSegment();
+            editTextName.setText(m_stFileName);
             try
             {
                 //Context applicationContext = MainActivity.getContextOfApplication();
@@ -120,20 +129,38 @@ public class FileInOutFragment extends Fragment
 
         if(filePath != null)
         {
-
+            /*editTextName.setText(filePath.toString());*/
             final ProgressDialog progressDialog = new ProgressDialog(this.getContext());
             progressDialog.setTitle("Отправка...");
             progressDialog.show();
-
+            // Проверка на не пустое имя файла
+            if(editTextName.getText().equals(""))
+            {
+                Toast.makeText(getActivity().getApplicationContext(), "Пустое имя файла", Toast.LENGTH_SHORT).show();
+                return;
+            }
             // Здесь позже рандом названия будем брать из textfield!!!
-            StorageReference ref = storageReference.child("images/"+ UUID.randomUUID().toString());
+            /*StorageReference ref = storageReference.child("images/"+ UUID.randomUUID().toString());*/
+            StorageReference ref = storageReference.child(PATH_NAME_UPLOADS_MAIN + editTextName.getText());
             ref.putFile(filePath)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             progressDialog.dismiss();
                             Toast.makeText(getActivity().getApplicationContext(), "Файл отправлен!", Toast.LENGTH_SHORT).show();
-                            filePath = null;
+
+                            //creating the upload object to store uploaded image details
+                            /*Upload upload = new Upload(editTextName.getText().toString().trim(), taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());*/
+                            Upload upload = new Upload(editTextName.getText().toString(), taskSnapshot.getMetadata().getReference().toString());
+
+                            //adding an upload to firebase database
+                            String uploadId = MainActivity.mDatabase.push().getKey();
+                            MainActivity.mDatabase.child(uploadId).setValue(upload);
+
+
+
+                            filePath = null;// Обнуляем, чтобы случайно еще раз не загрузить!!!
+                            editTextName.setText("");
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {

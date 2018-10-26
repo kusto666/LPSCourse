@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private GoogleMap mMap;
     private String m_TAG = "MyTag";
-    private DatabaseReference mDatabase;
+    public static DatabaseReference mDatabase;
 
     Location mLastLocation;
     Double m_dLatitude = 0.0;
@@ -177,7 +177,9 @@ public class MainActivity extends AppCompatActivity
     protected void askPermissions() {
         String[] permissions = {
                 "android.permission.READ_EXTERNAL_STORAGE",
-                "android.permission.WRITE_EXTERNAL_STORAGE"
+                "android.permission.WRITE_EXTERNAL_STORAGE",
+                "android.permission.ACCESS_FINE_LOCATION",
+                "android.permission.ACCESS_COARSE_LOCATION"
         };
         int requestCode = 200;
         requestPermissions(permissions, requestCode);
