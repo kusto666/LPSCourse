@@ -10,14 +10,28 @@ public class User {
     public String MyLongitude;
     public String email;
 
+    public String MyDirectorShip;
+    public String MyNameShip;
+    public String MyShortDescriptionShip;
+
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public User(String phoneID, String MyLatitude, String MyLongitude, String email) {
+    public User(String phoneID,
+                String MyLatitude,
+                String MyLongitude,
+                String email,
+                String MyDirectorShip,
+                String MyNameShip,
+                String MyShortDescriptionShip) {
         this.phoneID = phoneID;
         this.MyLatitude = MyLatitude;
         this.MyLongitude = MyLongitude;
         this.email = email;
+
+        this.MyDirectorShip = MyDirectorShip;
+        this.MyNameShip = MyNameShip;
+        this.MyShortDescriptionShip = MyShortDescriptionShip;
     }
 }

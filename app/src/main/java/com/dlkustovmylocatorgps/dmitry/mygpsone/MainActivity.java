@@ -293,25 +293,27 @@ public class MainActivity extends AppCompatActivity
                             Iterable<DataSnapshot> contactChildren = usersSnapshot.getChildren();
                             // Здесь перебераем все устройства, свое по phoneID игнорируем, а по другим
                             // выставляем маркеры!!! Как то так))))
-                            for (DataSnapshot contact : contactChildren) {
+                            for (DataSnapshot contact : contactChildren)
+                            {
                                 User user = contact.getValue(User.class);
 
-                                Log.i(m_TAG, "!!!!!!!User phoneID: " + user.phoneID );
+                                //Log.i(m_TAG, "!!!!!!!User phoneID: " + user.MyDirectorShip );
                                 // Проверка если свой phoneID
-                                if(user.phoneID.compareTo(m_phoneID) == 0)
+                         /*       if(user.phoneID.compareTo(m_phoneID) == 0)
                                 {
                                     Log.i(m_TAG, "Это Я!!!" );
                                 }
                                 else
-                                {
-                                    Log.i(m_TAG, "А Это НЕ Я!!!" );
+                                {*/
+                                    //Log.i(m_TAG, "А Это НЕ Я!!!" );
                                     String stFinishString = "";
                                     Double dLatTest = Double.parseDouble(user.MyLatitude);
                                     Double dLongTest = Double.parseDouble(user.MyLongitude);
                                     mMap.addMarker(new MarkerOptions()
                                             .position(new LatLng(dLatTest, dLongTest))
-                                            .title(user.phoneID + "\nЭто ВРАГ!!!"));
-                                }
+                                            .title(user.MyNameShip + "\nЭто ВРАГ!!!"));
+                                Log.i(m_TAG, "!!!!!!!User phoneID: " + user.MyDirectorShip );
+                               // }
 
 
                                 //Log.d("contact:: ", c.name + " " + c.phone);
