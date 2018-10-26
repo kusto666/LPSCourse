@@ -69,6 +69,8 @@ public class MainActivity extends AppCompatActivity
     Intent m_intent;
     SupportMapFragment m_mapFragment = null;// Фрагмент карты!!!
 
+    public static FragmentManager m_MainFragmentManager;
+
     DrawerLayout m_drawer_layaout;
 
     @Override
@@ -118,6 +120,8 @@ public class MainActivity extends AppCompatActivity
         m_mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         m_mapFragment.getMapAsync(this);
+        m_MainFragmentManager = this.getSupportFragmentManager();// Менеджер фрагментов самфй главный
+        // в нем все и подменяем!!!
 
         /*Button iosButton = (Button)findViewById(R.id.buttonToiOs);
         iosButton.setOnClickListener(new View.OnClickListener() {
@@ -141,15 +145,15 @@ public class MainActivity extends AppCompatActivity
         });*/
     }
     // This method is used to set the default fragment that will be shown.
-    private void setDefaultFragment(android.support.v4.app.Fragment defaultFragment)
+    /*private void setDefaultFragment(android.support.v4.app.Fragment defaultFragment)
     {
         this.replaceFragment(defaultFragment);
-    }
+    }*/
     // Replace current Fragment with the destination Fragment.
-    public void replaceFragment(android.support.v4.app.Fragment destFragment)
+    public static void replaceFragment(android.support.v4.app.Fragment destFragment,FragmentManager fragmentManager)
     {
         // First get FragmentManager object.
-        FragmentManager fragmentManager = this.getSupportFragmentManager();
+        //fragmentManager = this.getSupportFragmentManager();
 
         // Begin Fragment transaction.
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -417,6 +421,7 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         //drawer.closeDrawers();
+        m_MainFragmentManager = this.getSupportFragmentManager();
 
         if (id == R.id.nav_go_map)
         {
@@ -460,7 +465,7 @@ public class MainActivity extends AppCompatActivity
         else if (id == R.id.nav_go_points)
         {
             android.support.v4.app.Fragment tempFragment = new PointsFragmentMain();
-            replaceFragment(tempFragment);
+            replaceFragment(tempFragment,m_MainFragmentManager);
             if(m_mapFragment.isVisible())
             {
                 m_mapFragment.getView().setVisibility(View.GONE);
@@ -470,7 +475,7 @@ public class MainActivity extends AppCompatActivity
         else if (id == R.id.nav_go_tasks)
         {
             android.support.v4.app.Fragment tempFragment = new TaskFragmentMain();
-            replaceFragment(tempFragment);
+            replaceFragment(tempFragment,m_MainFragmentManager);
             if(m_mapFragment.isVisible())
             {
                 m_mapFragment.getView().setVisibility(View.GONE);
@@ -480,7 +485,7 @@ public class MainActivity extends AppCompatActivity
         else if (id == R.id.nav_go_messages)
         {
             android.support.v4.app.Fragment tempFragment = new MessagesFragmentMain();
-            replaceFragment(tempFragment);
+            replaceFragment(tempFragment,m_MainFragmentManager);
             if(m_mapFragment.isVisible())
             {
                 m_mapFragment.getView().setVisibility(View.GONE);
@@ -490,7 +495,7 @@ public class MainActivity extends AppCompatActivity
         else if (id == R.id.nav_go_controls)
         {
             android.support.v4.app.Fragment tempFragment  = new ControlsFragmentMain();
-            replaceFragment(tempFragment);
+            replaceFragment(tempFragment,m_MainFragmentManager);
             if(m_mapFragment.isVisible())
             {
                 m_mapFragment.getView().setVisibility(View.GONE);
@@ -501,7 +506,7 @@ public class MainActivity extends AppCompatActivity
         else if (id == R.id.nav_go_controls_settings)
         {
             android.support.v4.app.Fragment tempFragment  = new ControlSettingsFragmentMain();
-            replaceFragment(tempFragment);
+            replaceFragment(tempFragment,m_MainFragmentManager);
             if(m_mapFragment.isVisible())
             {
                 m_mapFragment.getView().setVisibility(View.GONE);

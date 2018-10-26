@@ -91,8 +91,19 @@ public class MessagesFragmentMain extends Fragment {
         buttonUploadFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println("Test.pdf");
-                MyUploadFile("Test.pdf");
+                // Вызвале менеджер
+                android.support.v4.app.Fragment tempFragment = new FileInOutFragment();
+                MainActivity.replaceFragment(tempFragment,MainActivity.m_MainFragmentManager);
+               /* if(m_mapFragment.isVisible())
+                {
+                    m_mapFragment.getView().setVisibility(View.GONE);
+                }*/
+                Log.i(m_TAG, "id == R.id.nav_go_points!!!");
+
+
+
+               // System.out.println("Test.pdf");
+               // MyUploadFile("Test.pdf");
                 /*switch (view.getId()) {
                     case R.id.buttonUploadFile:
                         //getPDF();
