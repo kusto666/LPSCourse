@@ -98,7 +98,7 @@ public class MessagesFragmentMain extends Fragment {
                 {
                     m_mapFragment.getView().setVisibility(View.GONE);
                 }*/
-                Log.i(m_TAG, "id == R.id.nav_go_points!!!");
+                Log.i(m_TAG, "Open FileInOutFragment!!!");
 
 
 
@@ -214,7 +214,7 @@ public class MessagesFragmentMain extends Fragment {
     //this method is uploading the file
     //the code is same as the previous tutorial
     //so we are not explaining it
-    private void uploadFile(Uri data) {
+/*    private void uploadFile(Uri data) {
         //progressBar.setVisibility(View.VISIBLE);
         StorageReference sRef = mStorageReference.child(com.dlkustovmylocatorgps.dmitry.mygpsone.Constants.STORAGE_PATH_UPLOADS + System.currentTimeMillis() + ".pdf");
         sRef.putFile(data)
@@ -244,6 +244,6 @@ public class MessagesFragmentMain extends Fragment {
                     }
                 });
 
-    }
+    }*/
 
 }

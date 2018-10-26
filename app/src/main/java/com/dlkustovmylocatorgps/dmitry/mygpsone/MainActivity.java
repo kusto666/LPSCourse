@@ -1,6 +1,7 @@
 package com.dlkustovmylocatorgps.dmitry.mygpsone;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
@@ -8,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -143,6 +145,9 @@ public class MainActivity extends AppCompatActivity
                 m_mapFragment.getView().setVisibility(View.GONE);
             }
         });*/
+        if (shouldAskPermissions()) {
+            askPermissions();
+        }
     }
     // This method is used to set the default fragment that will be shown.
     /*private void setDefaultFragment(android.support.v4.app.Fragment defaultFragment)
@@ -163,6 +168,19 @@ public class MainActivity extends AppCompatActivity
 
         // Commit the Fragment replace action.
         fragmentTransaction.commit();
+    }
+
+    protected boolean shouldAskPermissions() {
+        return (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1);
+    }
+    @TargetApi(23)
+    protected void askPermissions() {
+        String[] permissions = {
+                "android.permission.READ_EXTERNAL_STORAGE",
+                "android.permission.WRITE_EXTERNAL_STORAGE"
+        };
+        int requestCode = 200;
+        requestPermissions(permissions, requestCode);
     }
     /*public void HideFrame(android.support.v4.app.Fragment destFragment)
     {

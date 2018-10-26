@@ -1,5 +1,6 @@
 package com.dlkustovmylocatorgps.dmitry.mygpsone;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -30,6 +31,12 @@ import java.util.UUID;
 
 public class FileInOutFragment extends Fragment
 {
+    // Storage Permissions
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
     //Firebase - потом обобщим  здесь не оставим!!!
     FirebaseStorage storage;
     StorageReference storageReference;
@@ -81,9 +88,10 @@ public class FileInOutFragment extends Fragment
     private void chooseImage()
     {
         Intent intent = new Intent();
-        intent.setType("image/*");
+       /* intent.setType("image/*");*/
+        intent.setType("file/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+        startActivityForResult(Intent.createChooser(intent, "Выберите документ"), PICK_IMAGE_REQUEST);
     }
 
     @Override
@@ -107,29 +115,32 @@ public class FileInOutFragment extends Fragment
         }
     }
 
-    private void uploadImage() {
+    private void uploadImage()
+    {
 
         if(filePath != null)
         {
 
             final ProgressDialog progressDialog = new ProgressDialog(this.getContext());
-            progressDialog.setTitle("Uploading...");
+            progressDialog.setTitle("Отправка...");
             progressDialog.show();
 
+            // Здесь позже рандом названия будем брать из textfield!!!
             StorageReference ref = storageReference.child("images/"+ UUID.randomUUID().toString());
             ref.putFile(filePath)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             progressDialog.dismiss();
-                            Toast.makeText(getActivity().getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity().getApplicationContext(), "Файл отправлен!", Toast.LENGTH_SHORT).show();
+                            filePath = null;
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            Toast.makeText(getActivity().getApplicationContext(), "Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity().getApplicationContext(), "Ошибка отправки файла "+e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -140,6 +151,10 @@ public class FileInOutFragment extends Fragment
                             progressDialog.setMessage("Uploaded "+(int)progress+"%");
                         }
                     });
+        }
+        else
+        {
+            Toast.makeText(getActivity().getApplicationContext(), "Документ не выбран!", Toast.LENGTH_SHORT).show();
         }
     }
 }
