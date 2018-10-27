@@ -10,9 +10,9 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Здесь типа всякие настройки!"
-        android:textSize="60dp"
+        android:gravity="center"
+        android:text="Здесь список файлов"
         android:textColor="@android:color/holo_red_light"
-        android:gravity="center"/>
+        android:textSize="60dp" />
 
 </LinearLayout>

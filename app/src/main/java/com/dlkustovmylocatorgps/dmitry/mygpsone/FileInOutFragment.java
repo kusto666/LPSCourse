@@ -11,6 +11,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +47,7 @@ public class FileInOutFragment extends Fragment
     private String PATH_NAME_UPLOADS_MAIN = "uploads/";
 
     private String m_stFileName;
-    private Button btnChoose, btnUpload;
+    private Button btnChoose, btnUpload, btnGetListDocs;
     private EditText editTextName;
     private ImageView imageView;
 
@@ -63,6 +64,7 @@ public class FileInOutFragment extends Fragment
         //Initialize Views
         btnChoose = (Button)retView.findViewById(R.id.btnChoose);
         btnUpload = (Button)retView.findViewById(R.id.btnUpload);
+        btnGetListDocs = (Button)retView.findViewById(R.id.btnGetListDocs);
         imageView = (ImageView)retView.findViewById(R.id.imgView);
         editTextName = (EditText) retView.findViewById(R.id.editTextName);
 
@@ -86,6 +88,14 @@ public class FileInOutFragment extends Fragment
             {
                 System.out.println("uploadImage();");
                 uploadImage();
+            }
+        });
+
+        btnGetListDocs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                android.support.v4.app.Fragment tempFragment = new ListOfFilesFragment();
+                MainActivity.replaceFragment(tempFragment,MainActivity.m_MainFragmentManager);
             }
         });
 
