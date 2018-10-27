@@ -187,7 +187,7 @@ public class FileInOutFragment extends Fragment
 
                         //adding an upload to firebase database
                         String uploadId = MainActivity.mDatabase.push().getKey();
-                        MainActivity.mDatabase.child(uploadId).setValue(upload);
+                        MainActivity.mDatabase.child("my_files").child(uploadId).setValue(upload);
                         progressDialog.dismiss();
                         Toast.makeText(getActivity().getApplicationContext(), "Файл отправлен!", Toast.LENGTH_SHORT).show();
                     } else {
