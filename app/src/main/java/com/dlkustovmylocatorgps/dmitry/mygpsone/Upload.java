@@ -2,32 +2,38 @@ package com.dlkustovmylocatorgps.dmitry.mygpsone;
 
 public class Upload
 {
-    public String MyName;
-    public String MuUrlGs;
+    private String MyName;
+    private String MyUrlGs;
     private String MyUrlDownload;
 
-    // Default constructor required for calls to
-    // DataSnapshot.getValue(User.class)
     public Upload() {
     }
 
     public Upload(String MyName,
-                  String MuUrlGs,
-                  String MyUrlDownload) {
+                  String MyUrlGs,
+                  String MyUrlDownload)
+    {
         this.MyName = MyName;
-        this.MuUrlGs = MuUrlGs;
+        this.MyUrlGs = MyUrlGs;
         this.MyUrlDownload = MyUrlDownload;
     }
 
-    public String getName() {
+    public String getMyName()
+    {
         return MyName;
     }
 
-    public String getUrlGs() {
-        return MuUrlGs;
+    public String getMyUrlGs()
+    {
+        return MyUrlGs;
     }
 
-    public String getUrlDownload() {
+    public String getMyUrlDownload()
+    {
         return MyUrlDownload;
+    }
+    public void setMyUrlDownload(String MyUrlDownload)
+    {
+        this.MyUrlDownload = MyUrlDownload;
     }
 }

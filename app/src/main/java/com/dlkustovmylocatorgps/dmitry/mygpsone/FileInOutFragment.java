@@ -21,8 +21,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -153,19 +156,64 @@ public class FileInOutFragment extends Fragment
             }
             // Здесь позже рандом названия будем брать из textfield!!!
             /*StorageReference ref = storageReference.child("images/"+ UUID.randomUUID().toString());*/
-            StorageReference ref = storageReference.child(PATH_NAME_UPLOADS_MAIN + editTextName.getText());
-            ref.putFile(filePath)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            final StorageReference ref = storageReference.child(PATH_NAME_UPLOADS_MAIN + editTextName.getText());
+            UploadTask uploadTask =  ref.putFile(filePath);
+
+
+
+            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+
+                    // Continue with the task to get the download URL
+                    return ref.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>()
+            {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task)
+                {
+                    if (task.isSuccessful())
+                    {
+                        Upload upload;// Объект для загрузки в realbase!!!
+                        Uri downloadUri = task.getResult();
+                        upload = new Upload(editTextName.getText().toString(),
+                                downloadUri.toString(),
+                                downloadUri.toString());
+                                   //* taskSnapshot.getUploadSessionUri().toString());*//*
+
+                        //adding an upload to firebase database
+                        String uploadId = MainActivity.mDatabase.push().getKey();
+                        MainActivity.mDatabase.child(uploadId).setValue(upload);
+                        progressDialog.dismiss();
+                        Toast.makeText(getActivity().getApplicationContext(), "Файл отправлен!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // Handle failures
+                        // ...
+                    }
+                }
+            });
+
+
+
+            /*.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
+            {
+                Upload upload;// Объект для загрузки в realbase!!!
                         @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+                        {
                             progressDialog.dismiss();
                             Toast.makeText(getActivity().getApplicationContext(), "Файл отправлен!", Toast.LENGTH_SHORT).show();
 
                             //creating the upload object to store uploaded image details
-                            /*Upload upload = new Upload(editTextName.getText().toString().trim(), taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());*/
-                            Upload upload = new Upload(editTextName.getText().toString(),
+                            *//*Upload upload = new Upload(editTextName.getText().toString().trim(), taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());*//*
+                            upload = new Upload(editTextName.getText().toString(),
                                     taskSnapshot.getMetadata().getReference().toString(),
                                     taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
+                                   *//* taskSnapshot.getUploadSessionUri().toString());*//*
 
                             //adding an upload to firebase database
                             String uploadId = MainActivity.mDatabase.push().getKey();
@@ -176,7 +224,31 @@ public class FileInOutFragment extends Fragment
                             filePath = null;// Обнуляем, чтобы случайно еще раз не загрузить!!!
                             editTextName.setText("");
                         }
-                    })
+
+                //@Override
+
+
+
+
+                *//*public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()){
+                        Uri downUri = task.getResult();
+                        Log.d(Constants.MY_TAG, "onComplete: Url: "+ downUri.toString());
+                       // String stTempDownLoad = upload.getMyUrlDownload();
+                        //stTempDownLoad = downUri.toString();
+                        upload.setMyUrlDownload(downUri.toString());// Подменяем путь для загрузки!!!
+                        String uploadId = MainActivity.mDatabase.push().getKey();
+                        MainActivity.mDatabase.child(uploadId).setValue(upload);
+                    }
+                }*//*
+                   })
+                   *//* .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                               @Override
+                                               public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+
+                                               }
+                                           }
+                    )*//*
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
@@ -191,7 +263,8 @@ public class FileInOutFragment extends Fragment
                                     .getTotalByteCount());
                             progressDialog.setMessage("Uploaded "+(int)progress+"%");
                         }
-                    });
+                    });*/
+
         }
         else
         {
