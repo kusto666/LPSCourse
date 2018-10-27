@@ -82,7 +82,7 @@ public class MessagesFragmentMain extends Fragment {
 
 
         //getting the views
-        textViewStatus = (TextView)retView.findViewById(R.id.textViewStatus);
+       // textViewStatus = (TextView)retView.findViewById(R.id.textViewStatus);
        // editTextFilename = (EditText)retView.findViewById(R.id.editTextFileName);
         progressBar = (ProgressBar)retView.findViewById(R.id.progressbar);
 
