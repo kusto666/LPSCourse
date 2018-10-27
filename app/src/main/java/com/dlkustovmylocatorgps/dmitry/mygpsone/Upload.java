@@ -36,4 +36,8 @@ public class Upload
     {
         this.MyUrlDownload = MyUrlDownload;
     }
+    public void setMyName(String MyName)
+    {
+        this.MyName = MyName;
+    }
 }

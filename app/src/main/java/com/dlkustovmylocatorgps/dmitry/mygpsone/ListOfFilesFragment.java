@@ -4,9 +4,11 @@ package com.dlkustovmylocatorgps.dmitry.mygpsone;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,6 +28,7 @@ public class ListOfFilesFragment extends Fragment {
 
     Button btnAdd, btnFind, btnDelete;
     private ListView list_data;
+    private Upload selectedUser; //hold selected user
 
     private FirebaseDatabase database;
     private DatabaseReference dbRef;
@@ -42,6 +45,15 @@ public class ListOfFilesFragment extends Fragment {
         btnFind = (Button)retView.findViewById(R.id.btnFind);
         btnDelete = (Button)retView.findViewById(R.id.btnDelete);
         list_data = (ListView)retView.findViewById(R.id.list_data);
+        list_data.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Upload user = (Upload) adapterView.getItemAtPosition(i);
+                selectedUser = user;
+                Log.i(Constants.MY_TAG, "user.getMyName() = " + user.getMyName());
+                Log.i(Constants.MY_TAG, "user.getMyUrlDownload() = " + user.getMyUrlDownload());
+            }
+        });
 
         database = FirebaseDatabase.getInstance();
         dbRef = database.getReference("my_files");
