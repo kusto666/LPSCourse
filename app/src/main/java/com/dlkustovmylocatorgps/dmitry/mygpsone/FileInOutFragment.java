@@ -99,6 +99,8 @@ public class FileInOutFragment extends Fragment
             }
         });
 
+        storageReference = FirebaseStorage.getInstance().getReference().child("uploads");
+
         return retView;
     }
 
