@@ -99,7 +99,7 @@ public class FileInOutFragment extends Fragment
             }
         });
 
-        storageReference = FirebaseStorage.getInstance().getReference().child("uploads");
+        //storageReference = FirebaseStorage.getInstance().getReference().child("uploads");
 
         return retView;
     }
@@ -163,7 +163,9 @@ public class FileInOutFragment extends Fragment
 
                             //creating the upload object to store uploaded image details
                             /*Upload upload = new Upload(editTextName.getText().toString().trim(), taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());*/
-                            Upload upload = new Upload(editTextName.getText().toString(), taskSnapshot.getMetadata().getReference().toString());
+                            Upload upload = new Upload(editTextName.getText().toString(),
+                                    taskSnapshot.getMetadata().getReference().toString(),
+                                    taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
 
                             //adding an upload to firebase database
                             String uploadId = MainActivity.mDatabase.push().getKey();

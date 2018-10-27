@@ -1,14 +1,18 @@
 package com.dlkustovmylocatorgps.dmitry.mygpsone;
 
+import android.os.Message;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
 public class ImgViewHolder extends RecyclerView.ViewHolder {
 
     public TextView nameView;
     public ImageView imageView;
+
+   // private FirebaseRecyclerAdapter<Message, MessageViewHolder> mAdapter;
 
     public ImgViewHolder(View itemView) {
         super(itemView);
