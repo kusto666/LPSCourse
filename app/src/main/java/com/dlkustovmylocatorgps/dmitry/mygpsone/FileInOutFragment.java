@@ -56,7 +56,7 @@ public class FileInOutFragment extends Fragment
 
     private Uri filePath;
 
-    private final int PICK_IMAGE_REQUEST = 71;
+    private final int PICK_IMAGE_REQUEST = 1;
 
     @Nullable
     @Override

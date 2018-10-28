@@ -2,9 +2,11 @@ package com.dlkustovmylocatorgps.dmitry.mygpsone;
 
 public class Upload
 {
+    private String MyIDFireBase;
     private String MyName;
     private String MyUrlGs;
     private String MyUrlDownload;
+    private boolean MybChacked;
 
     public Upload() {
     }
@@ -16,6 +18,7 @@ public class Upload
         this.MyName = MyName;
         this.MyUrlGs = MyUrlGs;
         this.MyUrlDownload = MyUrlDownload;
+        this.MybChacked = false;
     }
 
     public String getMyName()
@@ -32,9 +35,27 @@ public class Upload
     {
         return MyUrlDownload;
     }
+
     public void setMyUrlDownload(String MyUrlDownload)
     {
         this.MyUrlDownload = MyUrlDownload;
+    }
+    public boolean getMybChacked()
+    {
+        return MybChacked;
+    }
+    public void setMybChacked(boolean MybChacked)
+    {
+        MybChacked = MybChacked;
+    }
+
+    public String getMyIDFireBase()
+    {
+        return MyIDFireBase;
+    }
+    public void setMyIDFireBase(String MyIDFireBAse)
+    {
+        this.MyIDFireBase = MyIDFireBAse;
     }
     public void setMyName(String MyName)
     {

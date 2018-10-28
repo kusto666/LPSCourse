@@ -1,17 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/txt_name2"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/name_doc"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:visibility="visible" />
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/list_view_item_checkbox"
+            android:layout_width="35dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:width="0dp"
+            android:clickable="true"
+            android:focusable="false" />
+
+        <TextView
+            android:id="@+id/txt_label_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/name_doc"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:visibility="visible" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/txt_name"
@@ -23,7 +40,7 @@
         android:visibility="visible" />
 
     <TextView
-        android:id="@+id/txt_path_download2"
+        android:id="@+id/txt_label_down"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/path_doc"
@@ -33,9 +50,9 @@
 
     <TextView
         android:id="@+id/txt_path_download"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:autoLink="all"
+        android:autoLink="none"
         android:text="@string/path_doc"
         android:textSize="20sp"
         android:textStyle="italic"
