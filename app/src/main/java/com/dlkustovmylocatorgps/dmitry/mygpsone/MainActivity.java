@@ -330,6 +330,7 @@ public class MainActivity extends AppCompatActivity
                                 else
                                 {*/
                                     //Log.i(m_TAG, "А Это НЕ Я!!!" );
+
                                 try
                                 {
                                     String stFinishString = "";
