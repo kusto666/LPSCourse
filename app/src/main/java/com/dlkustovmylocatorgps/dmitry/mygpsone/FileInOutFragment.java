@@ -44,8 +44,9 @@ public class FileInOutFragment extends Fragment
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
     //Firebase - потом обобщим  здесь не оставим!!!
-    FirebaseStorage storage;
     StorageReference storageReference;
+    FirebaseStorage storage;
+
 
     private String PATH_NAME_UPLOADS_MAIN = "uploads/";
 
@@ -196,74 +197,6 @@ public class FileInOutFragment extends Fragment
                     }
                 }
             });
-
-
-
-            /*.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
-            {
-                Upload upload;// Объект для загрузки в realbase!!!
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
-                        {
-                            progressDialog.dismiss();
-                            Toast.makeText(getActivity().getApplicationContext(), "Файл отправлен!", Toast.LENGTH_SHORT).show();
-
-                            //creating the upload object to store uploaded image details
-                            *//*Upload upload = new Upload(editTextName.getText().toString().trim(), taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());*//*
-                            upload = new Upload(editTextName.getText().toString(),
-                                    taskSnapshot.getMetadata().getReference().toString(),
-                                    taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
-                                   *//* taskSnapshot.getUploadSessionUri().toString());*//*
-
-                            //adding an upload to firebase database
-                            String uploadId = MainActivity.mDatabase.push().getKey();
-                            MainActivity.mDatabase.child(uploadId).setValue(upload);
-
-
-
-                            filePath = null;// Обнуляем, чтобы случайно еще раз не загрузить!!!
-                            editTextName.setText("");
-                        }
-
-                //@Override
-
-
-
-
-                *//*public void onComplete(@NonNull Task<Uri> task) {
-                    if (task.isSuccessful()){
-                        Uri downUri = task.getResult();
-                        Log.d(Constants.MY_TAG, "onComplete: Url: "+ downUri.toString());
-                       // String stTempDownLoad = upload.getMyUrlDownload();
-                        //stTempDownLoad = downUri.toString();
-                        upload.setMyUrlDownload(downUri.toString());// Подменяем путь для загрузки!!!
-                        String uploadId = MainActivity.mDatabase.push().getKey();
-                        MainActivity.mDatabase.child(uploadId).setValue(upload);
-                    }
-                }*//*
-                   })
-                   *//* .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                                               @Override
-                                               public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-
-                                               }
-                                           }
-                    )*//*
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            progressDialog.dismiss();
-                            Toast.makeText(getActivity().getApplicationContext(), "Ошибка отправки файла "+e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
-                                    .getTotalByteCount());
-                            progressDialog.setMessage("Uploaded "+(int)progress+"%");
-                        }
-                    });*/
 
         }
         else

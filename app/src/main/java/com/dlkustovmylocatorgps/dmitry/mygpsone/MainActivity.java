@@ -330,13 +330,21 @@ public class MainActivity extends AppCompatActivity
                                 else
                                 {*/
                                     //Log.i(m_TAG, "А Это НЕ Я!!!" );
+                                try
+                                {
                                     String stFinishString = "";
                                     Double dLatTest = Double.parseDouble(user.MyLatitude);
                                     Double dLongTest = Double.parseDouble(user.MyLongitude);
                                     mMap.addMarker(new MarkerOptions()
                                             .position(new LatLng(dLatTest, dLongTest))
                                             .title(user.MyNameShip + "\nЭто ВРАГ!!!"));
-                                Log.i(m_TAG, "!!!!!!!User phoneID: " + user.MyDirectorShip );
+                                    Log.i(m_TAG, "!!!!!!!User phoneID: " + user.MyDirectorShip );
+                                }
+                                catch (Exception ex)
+                                {
+                                    Toast.makeText(getBaseContext(), "Чего-то ждемссс!!!", Toast.LENGTH_SHORT).show();
+                                }
+
                                // }
 
 
