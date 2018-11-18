@@ -5,7 +5,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 
 @IgnoreExtraProperties
 public class User {
-    public String phoneID;
+    public String MyPhoneID;
     public String MyLatitude;
     public String MyLongitude;
     public String email;
@@ -25,7 +25,7 @@ public class User {
                 String MyDirectorShip,
                 String MyNameShip,
                 String MyShortDescriptionShip) {
-        this.phoneID = phoneID;
+        this.MyPhoneID = MyPhoneID;
         this.MyLatitude = MyLatitude;
         this.MyLongitude = MyLongitude;
         this.email = email;

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -43,6 +45,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -58,6 +65,8 @@ import android.support.v7.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
 
+    @VisibleForTesting
+    public ProgressDialog mProgressDialog;
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private GoogleMap mMap;
@@ -75,12 +84,39 @@ public class MainActivity extends AppCompatActivity
 
     DrawerLayout m_drawer_layaout;
 
+    private FirebaseAuth mAuth;
+    // [START declare_auth_listener]
+    private FirebaseAuth.AuthStateListener mAuthListener;
+// [END declare_auth_listener]
+
+    public void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.show();
+    }
+
+    public void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        hideProgressDialog();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         m_phoneID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-        mDatabase.child("users").child("phoneID_" + m_phoneID).child("phoneID").setValue(m_phoneID);
+        mDatabase.child("users").child("MyPhoneID_" + m_phoneID).child("MyPhoneID").setValue(m_phoneID);
 
 
         //mDatabase.child("users").child("2").child("phoneID").setValue("R-71");
@@ -124,7 +160,57 @@ public class MainActivity extends AppCompatActivity
         m_mapFragment.getMapAsync(this);
         m_MainFragmentManager = this.getSupportFragmentManager();// Менеджер фрагментов самфй главный
         // в нем все и подменяем!!!
+// [START initialize_auth]
+        mAuth = FirebaseAuth.getInstance();
+// [END initialize_auth]
+        // [START auth_state_listener]
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d(m_TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                } else {
+                    // User is signed out
+                    Log.d(m_TAG, "onAuthStateChanged:signed_out");
+                }
+                // [START_EXCLUDE]
+               // updateUI(user);
+                // [END_EXCLUDE]
+            }
+        };
+// [END auth_state_listener]
 
+
+        showProgressDialog();
+
+        // [START sign_in_with_email]
+        mAuth.signInWithEmailAndPassword("portkimry.commers@gmail.com", "761set31")
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d(m_TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
+
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Log.w(m_TAG, "signInWithEmail:failed", task.getException());
+                            Toast.makeText(MainActivity.this, R.string.auth_failed,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                        // [START_EXCLUDE]
+                        if (!task.isSuccessful()) {
+                            Toast.makeText(MainActivity.this, R.string.auth_failed,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        hideProgressDialog();
+                        // [END_EXCLUDE]
+                    }
+                });
+        // [END sign_in_with_email]
         /*Button iosButton = (Button)findViewById(R.id.buttonToiOs);
         iosButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -243,7 +329,7 @@ public class MainActivity extends AppCompatActivity
                     for (DataSnapshot contact : contactChildren) {
                         User user = contact.getValue(User.class);
 
-                        Log.i(m_TAG, "User phoneID: " + user.phoneID );
+                        Log.i(m_TAG, "User phoneID: " + user.MyPhoneID );
                         //Log.d("contact:: ", c.name + " " + c.phone);
                         //contacts.add(c);
                     }
@@ -292,27 +378,33 @@ public class MainActivity extends AppCompatActivity
                 public boolean onMyLocationButtonClick() {
                     Location myLocation = mMap.getMyLocation();
                     ///// Здесь будем обновлять свою позицию и смотреть другие и маркировать их на карте!!!
-                    try {
+                    try
+                    {
                         m_dLatitude = myLocation.getLatitude();
                         m_dLongitude = myLocation.getLongitude();
                         Log.i("MygetLatitude = ", Double.toString(m_dLatitude));
                         Log.i("MygetLongitude = ", Double.toString(m_dLongitude));
-// Запишем свои данные в firebase!!! Для данного устройства!!!
-                        mDatabase.child("users").child("phoneID_" + m_phoneID).child("MyLatitude").setValue(Double.toString(m_dLatitude));
-                        mDatabase.child("users").child("phoneID_" + m_phoneID).child("MyLongitude").setValue(Double.toString(m_dLongitude));
+                        // Запишем свои данные в firebase!!! Для данного устройства!!!
+                        mDatabase.child("users").child("MyPhoneID_" + m_phoneID).child("MyLatitude").setValue(Double.toString(m_dLatitude));
+                        mDatabase.child("users").child("MyPhoneID_" + m_phoneID).child("MyLongitude").setValue(Double.toString(m_dLongitude));
+                        // Здесь запишем временные назание, краткое описание судна и имя капитана!!!
+                        mDatabase.child("users").child("MyPhoneID_" + m_phoneID).child("MyNameShip").setValue("Каллипсо");
+                        mDatabase.child("users").child("MyPhoneID_" + m_phoneID).child("MyDirectorShip").setValue("Кусто");
+                        mDatabase.child("users").child("MyPhoneID_" + m_phoneID).child("MyShortDescriptionShip").setValue("Исследовательское судно!");
+                        mDatabase.child("users").child("MyPhoneID_" + m_phoneID).child("MyIsUserSelected").setValue("false");
                     }
                     catch (Exception ex)
                     {
-
+                        ex.getStackTrace();
                     }
 
 
-/// Здесь просмотрим еще и другие позиции других планшетов!!!!!!!
-                    mDatabase.addValueEventListener(new ValueEventListener() {
+                    // Здесь просмотрим еще и другие позиции других планшетов!!!!!!!
+                    mDatabase.addValueEventListener(new ValueEventListener()
+                    {
                         @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-
-
+                        public void onDataChange(DataSnapshot dataSnapshot)
+                        {
                             DataSnapshot usersSnapshot = dataSnapshot.child("users");
                             Iterable<DataSnapshot> contactChildren = usersSnapshot.getChildren();
                             // Здесь перебераем все устройства, свое по phoneID игнорируем, а по другим
@@ -412,6 +504,7 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void onClick(DialogInterface dialog, int which)
                         {
+                            mAuth.signOut();
                             finish();
                         }
 

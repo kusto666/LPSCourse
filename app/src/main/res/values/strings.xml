@@ -24,5 +24,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="name_doc">Name Doc:</string>
     <string name="path_doc">Path_Doc:</string>
+    <string name="auth_failed">Ошибка авторизации</string>
+    <string name="loading">Загрузка...</string>
 </resources>
 
