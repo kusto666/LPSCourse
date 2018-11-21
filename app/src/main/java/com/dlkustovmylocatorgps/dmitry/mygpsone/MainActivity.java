@@ -83,13 +83,13 @@ public class MainActivity extends AppCompatActivity
     public static FragmentManager m_MainFragmentManager;
 
     DrawerLayout m_drawer_layaout;
-
+/*
     private FirebaseAuth mAuth;
     // [START declare_auth_listener]
-    private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseAuth.AuthStateListener mAuthListener;*/
 // [END declare_auth_listener]
 
-    public void showProgressDialog() {
+    /*public void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
             mProgressDialog.setMessage(getString(R.string.loading));
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity
     public void onStop() {
         super.onStop();
         hideProgressDialog();
-    }
+    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity
         m_mapFragment.getMapAsync(this);
         m_MainFragmentManager = this.getSupportFragmentManager();// Менеджер фрагментов самфй главный
         // в нем все и подменяем!!!
-// [START initialize_auth]
+/*// [START initialize_auth]
         mAuth = FirebaseAuth.getInstance();
 // [END initialize_auth]
         // [START auth_state_listener]
@@ -180,10 +180,10 @@ public class MainActivity extends AppCompatActivity
                 // [END_EXCLUDE]
             }
         };
-// [END auth_state_listener]
+// [END auth_state_listener]*/
 
 
-        showProgressDialog();
+    /*    showProgressDialog();
 
         // [START sign_in_with_email]
         mAuth.signInWithEmailAndPassword("portkimry.commers@gmail.com", "761set31")
@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity
                         // [END_EXCLUDE]
                     }
                 });
-        // [END sign_in_with_email]
+        // [END sign_in_with_email]*/
         /*Button iosButton = (Button)findViewById(R.id.buttonToiOs);
         iosButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -504,7 +504,7 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void onClick(DialogInterface dialog, int which)
                         {
-                            mAuth.signOut();
+                            //mAuth.signOut();
                             finish();
                         }
 
