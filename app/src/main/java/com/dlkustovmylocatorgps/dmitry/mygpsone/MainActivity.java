@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private GoogleMap mMap;
-    private String m_TAG = "MyTag";
+    public static String m_TAG = "MyTag";
     public static DatabaseReference mDatabase;
 
     Location mLastLocation;
@@ -126,15 +126,15 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-///////////////////////////////////////////////////////////
+
        // android.support.v4.app.Fragment IOSFragment = new IOSFragment();
        // this.setDefaultFragment(IOSFragment);
 /////////////////////////////////////////////////////////////
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+     //   FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+     //   fab.setOnClickListener(new View.OnClickListener() {
+    //        @Override
+    //        public void onClick(View view) {
                 /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();*/
 /*                mapFragment.getView().setVisibility(View.VISIBLE);
@@ -143,8 +143,8 @@ public class MainActivity extends AppCompatActivity
                 HideFrame(iosFragment);
                 android.support.v4.app.Fragment winFragment = new WindowsFragment();
                 HideFrame(winFragment);*/
-            }
-        });
+      ///     }
+      //  });
 
         m_drawer_layaout = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -596,13 +596,18 @@ public class MainActivity extends AppCompatActivity
         }
         else if (id == R.id.nav_go_tasks)
         {
-            android.support.v4.app.Fragment tempFragment = new TaskFragmentMain();
+            Intent intent = new Intent(this, Main2Activity.class);
+            //EditText editText = (EditText) findViewById(R.id.editText);
+            //String message = editText.getText().toString();
+            //intent.putExtra(EXTRA_MESSAGE, message);
+            startActivity(intent);
+           /* android.support.v4.app.Fragment tempFragment = new TaskFragmentMain();
             replaceFragment(tempFragment,m_MainFragmentManager);
             if(m_mapFragment.isVisible())
             {
                 m_mapFragment.getView().setVisibility(View.GONE);
             }
-            Log.i(m_TAG, "id == R.id.nav_go_tasks!!!");
+            Log.i(m_TAG, "id == R.id.nav_go_tasks!!!");*/
         }
         else if (id == R.id.nav_go_messages)
         {
