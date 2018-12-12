@@ -48,9 +48,11 @@ public class AuthActivity extends BaseActivity implements
         mStatusTextView = (TextView) findViewById(R.id.status);
         mDetailTextView = (TextView) findViewById(R.id.detail);
         mEmailField = (EditText) findViewById(R.id.field_email);
-        mEmailField.setText("portkimry.commers@gmail.com");
+        /*mEmailField.setText("portkimry.commers@gmail.com");*/
+        mEmailField.setText("test555@gmail.com");
         mPasswordField = (EditText) findViewById(R.id.field_password);
-        mPasswordField.setText("761set31");
+        /*mPasswordField.setText("761set31");*/
+        mPasswordField.setText("111111");
         // Buttons
         findViewById(R.id.email_sign_in_button).setOnClickListener(this);
         findViewById(R.id.email_create_account_button).setOnClickListener(this);
@@ -147,7 +149,10 @@ public class AuthActivity extends BaseActivity implements
                         if (task.isSuccessful())
                         {
                             Intent intent =  new Intent(AuthActivity.this, MainActivity.class);
+                            finish();
                             startActivity(intent);
+                            MyConstants.MY_ID_CURRENT_USER = task.getResult().getUser().getUid();
+
                             /*Log.w(TAG, "signInWithEmail:failed", task.getException());
                             Toast.makeText(AuthActivity.this, R.string.auth_failed,
                                     Toast.LENGTH_SHORT).show();*/

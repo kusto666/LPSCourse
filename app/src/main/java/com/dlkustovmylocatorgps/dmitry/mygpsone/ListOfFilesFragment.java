@@ -79,14 +79,14 @@ public class ListOfFilesFragment extends Fragment {
 
                     public void onClick(DialogInterface dialog, int which) {
                         // Do nothing but close the dialog
-                        Log.d(Constants.MY_TAG, "btnDelete.setOnClickListener!");
+                        Log.d(MyConstants.MY_TAG, "btnDelete.setOnClickListener!");
                         StorageReference photoRef = mFirebaseStorage.getReferenceFromUrl(selectedUser.getMyUrlDownload());
 
                         photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 // File deleted successfully
-                                Log.d(Constants.MY_TAG, "onSuccess: deleted file");
+                                Log.d(MyConstants.MY_TAG, "onSuccess: deleted file");
                                 dbRef.child(selectedUser.getMyIDFireBase()).setValue(null);
 //                        list_data.notifyAll();
                             }
@@ -94,7 +94,7 @@ public class ListOfFilesFragment extends Fragment {
                             @Override
                             public void onFailure(@NonNull Exception exception) {
                                 // Uh-oh, an error occurred!
-                                Log.d(Constants.MY_TAG, "onFailure: did not delete file");
+                                Log.d(MyConstants.MY_TAG, "onFailure: did not delete file");
                             }
                         });
                         dialog.dismiss();
@@ -106,7 +106,7 @@ public class ListOfFilesFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        Log.i(Constants.MY_TAG, "Передумал удалять!!!");
+                        Log.i(MyConstants.MY_TAG, "Передумал удалять!!!");
                         dialog.dismiss();
                     }
                 });
@@ -125,8 +125,8 @@ public class ListOfFilesFragment extends Fragment {
             {
                 Upload user = (Upload) adapterView.getItemAtPosition(position);
                 selectedUser = user;
-                Log.i(Constants.MY_TAG, "user.getMyName() = " + user.getMyName());
-                Log.i(Constants.MY_TAG, "user.getMyUrlDownload() = " + user.getMyUrlDownload());
+                Log.i(MyConstants.MY_TAG, "user.getMyName() = " + user.getMyName());
+                Log.i(MyConstants.MY_TAG, "user.getMyUrlDownload() = " + user.getMyUrlDownload());
      /*           final CheckBox itemCheckbox = (CheckBox) view.findViewById(R.id.list_view_item_checkbox);
                 if(!itemCheckbox.isChecked())
                 {
@@ -144,20 +144,20 @@ public class ListOfFilesFragment extends Fragment {
                     @Override
                     public void onClick(View v)
                     {
-                        Log.d(Constants.MY_TAG, "btnDelete.setOnClickListener!");
+                        Log.d(MyConstants.MY_TAG, "btnDelete.setOnClickListener!");
                         StorageReference photoRef = mFirebaseStorage.getReferenceFromUrl(selectedUser.getMyUrlDownload());
 
                         photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 // File deleted successfully
-                                Log.d(Constants.MY_TAG, "onSuccess: deleted file");
+                                Log.d(MyConstants.MY_TAG, "onSuccess: deleted file");
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception exception) {
                                 // Uh-oh, an error occurred!
-                                Log.d(Constants.MY_TAG, "onFailure: did not delete file");
+                                Log.d(MyConstants.MY_TAG, "onFailure: did not delete file");
                             }
                         });
                     }
@@ -192,7 +192,7 @@ public class ListOfFilesFragment extends Fragment {
                 //публикуем данные в ListView
                 ListViewAdapter adapter = new ListViewAdapter(ListOfFilesFragment.this, list_users);
                 list_data.setAdapter(adapter);
-                Log.i(Constants.MY_TAG, "ListViewAdapter size = " + ListViewAdapter.checkState.length);
+                Log.i(MyConstants.MY_TAG, "ListViewAdapter size = " + ListViewAdapter.checkState.length);
 
                 list_data.setOnItemClickListener(new AdapterView.OnItemClickListener()
                 {
@@ -201,9 +201,9 @@ public class ListOfFilesFragment extends Fragment {
                     {
                         Upload user = (Upload) adapterView.getItemAtPosition(position);
                         selectedUser = user;
-                        Log.i(Constants.MY_TAG, "user.MyIDFireBAse = " + user.getMyIDFireBase());
-                        Log.i(Constants.MY_TAG, "user.getMyName() = " + user.getMyName());
-                        Log.i(Constants.MY_TAG, "user.getMyUrlDownload() = " + user.getMyUrlDownload());
+                        Log.i(MyConstants.MY_TAG, "user.MyIDFireBAse = " + user.getMyIDFireBase());
+                        Log.i(MyConstants.MY_TAG, "user.getMyName() = " + user.getMyName());
+                        Log.i(MyConstants.MY_TAG, "user.getMyUrlDownload() = " + user.getMyUrlDownload());
                         CheckBox itemCheckbox = (CheckBox) view.findViewById(R.id.list_view_item_checkbox);
                         if(!user.getMybChacked())
                         {
@@ -222,7 +222,7 @@ public class ListOfFilesFragment extends Fragment {
                         for(int i = 0; i < list_data.getCount(); i++)//
                         {
                             Upload upp = (Upload)list_users.get(i);
-                            Log.i(Constants.MY_TAG, "upp[ " + i + "].getMybChacked() = " + upp.getMybChacked());
+                            Log.i(MyConstants.MY_TAG, "upp[ " + i + "].getMybChacked() = " + upp.getMybChacked());
                         }
                     }
 

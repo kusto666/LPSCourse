@@ -126,7 +126,8 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        Toast.makeText(this, MyConstants.MY_ID_CURRENT_USER,
+                Toast.LENGTH_SHORT).show();
        // android.support.v4.app.Fragment IOSFragment = new IOSFragment();
        // this.setDefaultFragment(IOSFragment);
 /////////////////////////////////////////////////////////////
