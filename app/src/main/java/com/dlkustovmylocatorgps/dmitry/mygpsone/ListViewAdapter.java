@@ -67,17 +67,17 @@ public class ListViewAdapter extends BaseAdapter {
             @Override
             public void onClick(View v)
             {
-               //Log.i(MyConstants.MY_TAG, "itemCheckbox.setOnClickListener(new View.OnClickListener()");
+               //Log.i(CMAINCONSTANTS.MY_TAG, "itemCheckbox.setOnClickListener(new View.OnClickListener()");
 
                        /* if(itemCheckbox.isChecked())
                         {
-                            Log.i(MyConstants.MY_TAG, "itemCheckbox = true" );
+                            Log.i(CMAINCONSTANTS.MY_TAG, "itemCheckbox = true" );
                         }
                         else
                         {
-                            Log.i(MyConstants.MY_TAG, "itemCheckbox = false" );
+                            Log.i(CMAINCONSTANTS.MY_TAG, "itemCheckbox = false" );
                         }*/
-            /*    Log.i(MyConstants.MY_TAG, "ListViewAdapter size 555 = " + ListViewAdapter.checkState.length);
+            /*    Log.i(CMAINCONSTANTS.MY_TAG, "ListViewAdapter size 555 = " + ListViewAdapter.checkState.length);
                for(int i = 0; i < checkState.length; i++)
                 {
                     if(i == position)
@@ -91,9 +91,9 @@ public class ListViewAdapter extends BaseAdapter {
                         itemCheckbox.setChecked(false);
                         checkState[i]=false;
                     }
-                    Log.i(MyConstants.MY_TAG, "checkState[" + i + "] = " + checkState[i]);
+                    Log.i(CMAINCONSTANTS.MY_TAG, "checkState[" + i + "] = " + checkState[i]);
                 }
-                Log.i(MyConstants.MY_TAG, "notifyDataSetChanged();!!!!!!!!!!!!!!!!");
+                Log.i(CMAINCONSTANTS.MY_TAG, "notifyDataSetChanged();!!!!!!!!!!!!!!!!");
                 notifyDataSetChanged();*/
             }
         });

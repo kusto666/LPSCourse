@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -41,11 +40,11 @@ public class TabTaskCurr extends Fragment
 
         mTvUid = (TextView)retView.findViewById(R.id.field_uid);
         tvTaskId = (TextView)retView.findViewById(R.id.tvTaskId);
-        mTvUid.setText(MyConstants.MY_ID_CURRENT_USER);
+        mTvUid.setText(CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER);
 
         Query query = FirebaseDatabase.getInstance().getReference()
                                     .child("my_users_jobs")
-                                    .child(MyConstants.MY_ID_CURRENT_USER)/*.equalTo("1","MyIsCurrTask")*/;
+                                    .child(CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER)/*.equalTo("1","MyIsCurrTask")*/;
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

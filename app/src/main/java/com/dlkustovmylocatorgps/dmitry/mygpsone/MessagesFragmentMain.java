@@ -68,7 +68,7 @@ public class MessagesFragmentMain extends Fragment {
         m_myRootRef = m_myStorage.getReference();
         //getting firebase objects
         //mStorageReference = FirebaseStorage.getInstance().getReference();
-       //mDatabaseReference = FirebaseDatabase.getInstance().getReference(com.dlkustovmylocatorgps.dmitry.mygpsone.MyConstants.DATABASE_PATH_UPLOADS);
+       //mDatabaseReference = FirebaseDatabase.getInstance().getReference(com.dlkustovmylocatorgps.dmitry.mygpsone.CMAINCONSTANTS.DATABASE_PATH_UPLOADS);
 
        // mDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
@@ -216,7 +216,7 @@ public class MessagesFragmentMain extends Fragment {
     //so we are not explaining it
 /*    private void uploadFile(Uri data) {
         //progressBar.setVisibility(View.VISIBLE);
-        StorageReference sRef = mStorageReference.child(com.dlkustovmylocatorgps.dmitry.mygpsone.MyConstants.STORAGE_PATH_UPLOADS + System.currentTimeMillis() + ".pdf");
+        StorageReference sRef = mStorageReference.child(com.dlkustovmylocatorgps.dmitry.mygpsone.CMAINCONSTANTS.STORAGE_PATH_UPLOADS + System.currentTimeMillis() + ".pdf");
         sRef.putFile(data)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @SuppressWarnings("VisibleForTests")

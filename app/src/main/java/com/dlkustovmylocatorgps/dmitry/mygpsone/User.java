@@ -1,10 +1,10 @@
 package com.dlkustovmylocatorgps.dmitry.mygpsone;
 
 import com.google.firebase.database.IgnoreExtraProperties;
-
+import mygpsx.CStructUser;
 
 @IgnoreExtraProperties
-public class User {
+public class User /*extends  CStructUser*/{
     public String MyPhoneID;
     public String MyLatitude;
     public String MyLongitude;
@@ -15,7 +15,7 @@ public class User {
     public String MyShortDescriptionShip;
 
     public User() {
-        // Default constructor required for calls to DataSnapshot.getValue(User.class)
+        //CStructUser test__ = new CStructUser();
     }
 
     public User(String phoneID,

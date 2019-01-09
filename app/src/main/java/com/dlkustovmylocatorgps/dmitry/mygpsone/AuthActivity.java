@@ -49,7 +49,7 @@ public class AuthActivity extends BaseActivity implements
         mDetailTextView = (TextView) findViewById(R.id.detail);
         mEmailField = (EditText) findViewById(R.id.field_email);
         /*mEmailField.setText("portkimry.commers@gmail.com");*/
-        mEmailField.setText("test555@gmail.com");
+        mEmailField.setText("test1@gmail.com");
         mPasswordField = (EditText) findViewById(R.id.field_password);
         /*mPasswordField.setText("761set31");*/
         mPasswordField.setText("111111");
@@ -67,10 +67,14 @@ public class AuthActivity extends BaseActivity implements
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
+                if (user != null)
+                {
+                    updateUI(null);
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                } else {
+                }
+                else
+                    {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                 }
@@ -151,7 +155,10 @@ public class AuthActivity extends BaseActivity implements
                             Intent intent =  new Intent(AuthActivity.this, MainActivity.class);
                             finish();
                             startActivity(intent);
-                            MyConstants.MY_ID_CURRENT_USER = task.getResult().getUser().getUid();
+                            CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER = task.getResult().getUser().getUid();
+                            Log.d(TAG, "CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER == " + CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER);
+                            CMAINCONSTANTS.MY_CURRENT_EMAIL_SYSUSER = task.getResult().getUser().getEmail();
+                            Log.d(TAG, "CMAINCONSTANTS.MY_CURRENT_EMAIL_SYSUSER == " + CMAINCONSTANTS.MY_CURRENT_EMAIL_SYSUSER);
 
                             /*Log.w(TAG, "signInWithEmail:failed", task.getException());
                             Toast.makeText(AuthActivity.this, R.string.auth_failed,
@@ -206,14 +213,26 @@ public class AuthActivity extends BaseActivity implements
 
     private void updateUI(FirebaseUser user) {
         hideProgressDialog();
-        if (user != null) {
+        if (user != null)
+        {
            // mStatusTextView.setText(getString(R.string.emailpassword_status_fmt, user.getEmail()));
-            mDetailTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
-
+            // Была кнопка выйти из аккаунта, теперь ее уберем для правдоподобности!!! - Закомментим и потом выйдим !!!
+           /* mDetailTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
             findViewById(R.id.email_password_buttons).setVisibility(View.GONE);
             findViewById(R.id.email_password_fields).setVisibility(View.GONE);
-            findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
-        } else {
+            findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);*/
+
+           // Это новый вариант пока!!!
+            updateUI(null);
+            mStatusTextView.setText(R.string.signed_out);
+            mDetailTextView.setText(null);
+
+            findViewById(R.id.email_password_buttons).setVisibility(View.VISIBLE);
+            findViewById(R.id.email_password_fields).setVisibility(View.VISIBLE);
+            findViewById(R.id.sign_out_button).setVisibility(View.GONE);
+        }
+        else
+        {
             mStatusTextView.setText(R.string.signed_out);
             mDetailTextView.setText(null);
 

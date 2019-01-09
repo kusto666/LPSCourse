@@ -3,7 +3,6 @@ package com.dlkustovmylocatorgps.dmitry.mygpsone;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,9 +14,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -31,9 +28,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -45,11 +39,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -58,8 +47,6 @@ import com.google.firebase.database.ValueEventListener;
 
 
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 
 
 public class MainActivity extends AppCompatActivity
@@ -76,7 +63,8 @@ public class MainActivity extends AppCompatActivity
     Location mLastLocation;
     Double m_dLatitude = 0.0;
     Double m_dLongitude = 0.0;
-    private static String m_phoneID = "";
+    String m_myPhoneBinding;
+    //private static String m_phoneID = "";
     Intent m_intent;
     SupportMapFragment m_mapFragment = null;// Фрагмент карты!!!
 
@@ -114,9 +102,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        // Это было раньше, теперь мы не создаем из приложения андроид запись в базе , таблицы 'users'
+        // типа: MyPhoneID_*********
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        m_phoneID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-        mDatabase.child("users").child("MyPhoneID_" + m_phoneID).child("MyPhoneID").setValue(m_phoneID);
+       // mDatabase.child("users").child("MyPhoneID_" + CMAINCONSTANTS.MY_CURRENT_PHONE_ID)
+       //         .child("MyPhoneID").setValue(CMAINCONSTANTS.MY_CURRENT_PHONE_ID);
+        // Теперь мы только смотрим с какого ID-устройства мы заходим(авторизируемся)!!!
+        CMAINCONSTANTS.MY_CURRENT_PHONE_ID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+
 
 
         //mDatabase.child("users").child("2").child("phoneID").setValue("R-71");
@@ -126,8 +119,8 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Toast.makeText(this, MyConstants.MY_ID_CURRENT_USER,
-                Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER,
+                Toast.LENGTH_LONG).show();
        // android.support.v4.app.Fragment IOSFragment = new IOSFragment();
        // this.setDefaultFragment(IOSFragment);
 /////////////////////////////////////////////////////////////
@@ -373,26 +366,96 @@ public class MainActivity extends AppCompatActivity
 
         }
     }
+
+    // Получение из 'my_sys_users_binding' по CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER
+    // привязанный myPhoneBinding:
+    //"MyPhoneID_pafsozdagvb" - пример!!!
+
+    String GetMyPhoneIDByUserID(String stUserID)
+    {
+        DatabaseReference mDatabaseID = FirebaseDatabase.getInstance().getReference()
+                .child("my_sys_users_binding").child(stUserID).child("myPhoneBinding");
+
+        mDatabaseID.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot arg0)
+            {
+                m_myPhoneBinding = arg0.getValue(String.class);
+                if(!SetPosMyPhoneID(m_myPhoneBinding, m_dLatitude, m_dLongitude))
+                {
+                    Toast.makeText(getBaseContext(), "Что-то пошло не так в SetPosMyPhoneID", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+               // stRet = null;
+            }
+
+        });
+
+
+
+        return  this.m_myPhoneBinding;
+    }
+
+    // Установка(запись новых координат) в таблицу 'users' для "MyPhoneID_pafsozdagvb" - пример!!!
+    boolean SetPosMyPhoneID(String stMyPhoneID, Double dLatitude, Double dLongitude)
+    {
+        boolean bRet = true;
+        if(stMyPhoneID.equals("none"))// Значит нет привязанного судна!!!
+        {
+            return false;
+        }
+        DatabaseReference mDatabase2 = FirebaseDatabase.getInstance().getReference();
+
+        try {
+            mDatabase2.child("users").child(stMyPhoneID).child("myLatitude").setValue(Double.toString(dLatitude));
+            mDatabase2.child("users").child(stMyPhoneID).child("myLongitude").setValue(Double.toString(dLongitude));
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+            bRet = false;
+        }
+
+        return  bRet;
+    }
+
+    // Обновление позиции при нажатии на курсор в правом верхнем углу экрана приложения!
     private GoogleMap.OnMyLocationButtonClickListener onMyLocationButtonClickListener =
             new GoogleMap.OnMyLocationButtonClickListener() {
                 @Override
                 public boolean onMyLocationButtonClick() {
                     Location myLocation = mMap.getMyLocation();
                     ///// Здесь будем обновлять свою позицию и смотреть другие и маркировать их на карте!!!
+                    // Здесь меняем логику, теперь сперва смотрим в таблицу 'my_sys_users_binding' - в ней и находиться
+                    // связка с судном(объектом в будущем в целом) из таблицы 'users'
                     try
                     {
                         m_dLatitude = myLocation.getLatitude();
                         m_dLongitude = myLocation.getLongitude();
-                        Log.i("MygetLatitude = ", Double.toString(m_dLatitude));
-                        Log.i("MygetLongitude = ", Double.toString(m_dLongitude));
-                        // Запишем свои данные в firebase!!! Для данного устройства!!!
-                        mDatabase.child("users").child("MyPhoneID_" + m_phoneID).child("MyLatitude").setValue(Double.toString(m_dLatitude));
+                        Log.d("MygetLatitude = ", Double.toString(m_dLatitude));
+                        Log.d("MygetLongitude = ", Double.toString(m_dLongitude));
+
+                        m_myPhoneBinding = GetMyPhoneIDByUserID(CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER);
+                        Log.d("m_myPhoneBinding = ", m_myPhoneBinding);
+
+
+
+
+/* mDatabase.child("users").child("MyPhoneID_" + m_phoneID).child("MyLatitude").setValue(Double.toString(m_dLatitude));
                         mDatabase.child("users").child("MyPhoneID_" + m_phoneID).child("MyLongitude").setValue(Double.toString(m_dLongitude));
                         // Здесь запишем временные назание, краткое описание судна и имя капитана!!!
                         mDatabase.child("users").child("MyPhoneID_" + m_phoneID).child("MyNameShip").setValue("Каллипсо");
                         mDatabase.child("users").child("MyPhoneID_" + m_phoneID).child("MyDirectorShip").setValue("Кусто");
                         mDatabase.child("users").child("MyPhoneID_" + m_phoneID).child("MyShortDescriptionShip").setValue("Исследовательское судно!");
-                        mDatabase.child("users").child("MyPhoneID_" + m_phoneID).child("MyIsUserSelected").setValue("false");
+                        mDatabase.child("users").child("MyPhoneID_" + m_phoneID).child("MyIsUserSelected").setValue("false");*/
+                        // Запишем свои данные в firebase!!! Для данного устройства!!!
+
+
+
+
                     }
                     catch (Exception ex)
                     {
@@ -401,7 +464,7 @@ public class MainActivity extends AppCompatActivity
 
 
                     // Здесь просмотрим еще и другие позиции других планшетов!!!!!!!
-                    mDatabase.addValueEventListener(new ValueEventListener()
+                  /*  mDatabase.addValueEventListener(new ValueEventListener()
                     {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot)
@@ -416,12 +479,12 @@ public class MainActivity extends AppCompatActivity
 
                                 //Log.i(m_TAG, "!!!!!!!User phoneID: " + user.MyDirectorShip );
                                 // Проверка если свой phoneID
-                         /*       if(user.phoneID.compareTo(m_phoneID) == 0)
+                         *//*       if(user.phoneID.compareTo(m_phoneID) == 0)
                                 {
                                     Log.i(m_TAG, "Это Я!!!" );
                                 }
                                 else
-                                {*/
+                                {*//*
                                     //Log.i(m_TAG, "А Это НЕ Я!!!" );
 
                                 try
@@ -455,7 +518,7 @@ public class MainActivity extends AppCompatActivity
                             // Failed to read value
                             Log.i(m_TAG, "Failed to read value.", error.toException());
                         }
-                    });
+                    });*/
 
 
 
