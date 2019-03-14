@@ -16,8 +16,8 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:context="@layout/map"
-        tools:layout="@layout/content_main" />
+        tools:context="@layout/map"/>
+        <!--tools:layout="@layout/content_main" />-->
 
 
 </FrameLayout>
