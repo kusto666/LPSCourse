@@ -14,4 +14,7 @@ public class CMAINCONSTANTS
     public static String MY_CURRENT_EMAIL_SYSUSER = "";
     // Главный второй ID - unique (по умолчанию равно = "")
     public static String MY_CURRENT_ID_SYSUSER = "";
+    // ID по типу как в eclipse , например: "MyPhoneID_zjpargdoisy" - генериться случайно!!!
+    public static String MY_CURRENT_ID_SYSUSER_MyPhoneID = "";
+
 }

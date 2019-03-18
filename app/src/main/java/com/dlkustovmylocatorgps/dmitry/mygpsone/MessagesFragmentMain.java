@@ -58,7 +58,7 @@ public class MessagesFragmentMain extends Fragment {
 
     StorageReference mStorageReference;
 
-    private String m_TAG = "MyTag";
+    private String m_TAG = "mmmmmm";// Для отслеживания событий - они мне ВАЖНЫ!!!
 
     @Nullable
     @Override
@@ -122,10 +122,13 @@ public class MessagesFragmentMain extends Fragment {
             public void onClick(View v)
             {
                 mDatabase = FirebaseDatabase.getInstance().getReference()
-                        .child("messages");
+                        .child("message_to_android");
                 try
                 {
-                    mDatabase.child("msg_555555").child("msg_body").setValue(editTextOutMsg.getText().toString());
+                    //mDatabase.child("msg_555555").child("msg_body").setValue(editTextOutMsg.getText().toString()); // Старый вариант!!!
+                    //mDatabase.child(CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER_MyPhoneID).child("msg_body").setValue(editTextOutMsg.getText().toString());
+                    CDateTime newCurrDate = new CDateTime(); // Берем текущее время для записи в базу!!!
+                    SendingMsgOrFile(mDatabase, newCurrDate,editTextOutMsg.getText().toString(),"no_read",editTextOutMsg.getText().toString(), true);
                     editTextOutMsg.setText("");
                 }
                 catch (Exception e)
@@ -136,9 +139,9 @@ public class MessagesFragmentMain extends Fragment {
             }
         });
 
-        mDatabaseIncoming = FirebaseDatabase.getInstance().getReference().child("message_to_android");
+        mDatabaseIncoming = FirebaseDatabase.getInstance().getReference().child("message_to_android").child(CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER_MyPhoneID);
 
-        mDatabaseIncoming.addValueEventListener(new ValueEventListener() {
+        mDatabaseIncoming.orderByChild("msg_unix_time").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot arg0)
             {
@@ -245,5 +248,54 @@ public class MessagesFragmentMain extends Fragment {
                 });
 
     }*/
+    // Функция отправки сообщения или ссылки на файл в сообщении!!!
+    private void SendingMsgOrFile(DatabaseReference mDatabaseTemp,CDateTime newCurrDate, String stMsgBody, String stMsgStatus,
+                                  String stMsgTitle, Boolean bIsText)
+    {
+        // Формируем идентификатор сообщения!!!
+        //m_stFINISH_ID_MSG = CCONSTANTS_EVENTS_JOB.MY_CURRENT_TEMP_USER_FOR_MSG +
+        //        CCONSTANTS_EVENTS_JOB.MY_SEPARATOR_MSG + newCurrDate.GetCurrLongTime();
+        //System.out.println("stFINISH_ID_MSG = " + m_stFINISH_ID_MSG);
 
+        CMessages bMessss = new CMessages();
+        bMessss.msg_body = stMsgBody;
+        if(bIsText)
+        {
+            bMessss.msg_is_text = "true";
+        }
+        else
+        {
+            bMessss.msg_is_text = "false";
+        }
+        bMessss.msg_status = stMsgStatus;
+        bMessss.msg_time = newCurrDate.GetPrintTime(newCurrDate.GetCurrLongTime());
+        bMessss.msg_title = stMsgTitle;
+        bMessss.msg_to_user = CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER_MyPhoneID;
+        bMessss.msg_unix_time = newCurrDate.GetCurrLongTime();
+
+
+
+		/* mDatabaseTemp.child(m_stFINISH_ID_MSG).child("msg_body").setValueAsync(stMsgBody);
+		 mDatabaseTemp.child(m_stFINISH_ID_MSG).child("msg_status").setValueAsync(stMsgStatus);
+		 mDatabaseTemp.child(m_stFINISH_ID_MSG).child("msg_time").
+		 setValueAsync(newCurrDate.GetPrintTime(newCurrDate.GetCurrLongTime()));
+		 mDatabaseTemp.child(m_stFINISH_ID_MSG).child("msg_unix_time").setValueAsync(newCurrDate.GetCurrLongTime());
+		 mDatabaseTemp.child(m_stFINISH_ID_MSG).child("msg_title").setValueAsync(stMsgBody);*/
+
+		 /*if(bIsText)
+		 {
+			 mDatabaseTemp.child(m_stFINISH_ID_MSG).child("msg_is_text").setValueAsync("true");
+		 }
+		 else
+		 {
+			 mDatabaseTemp.child(m_stFINISH_ID_MSG).child("msg_is_text").setValueAsync("false");
+		 }*/
+
+        //mDatabaseTemp.child(m_stFINISH_ID_MSG).child("msg_to_user").setValueAsync(CCONSTANTS_EVENTS_JOB.MY_CURRENT_TEMP_USER_FOR_MSG);
+        String uploadId = mDatabaseTemp.push().getKey();
+        mDatabaseTemp.child(CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER_MyPhoneID).child(uploadId).setValue(bMessss);
+
+        editTextOutMsg.setText("");
+        System.out.println("Типа послали сообщение!!!");
+    }
 }

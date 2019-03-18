@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private GoogleMap mMap;
-    public static String m_TAG = "MyTag";
+    public static String m_TAG = "555555";
     public static DatabaseReference mDatabase;
 
     Location mLastLocation;
@@ -109,8 +109,7 @@ public class MainActivity extends AppCompatActivity
        //         .child("MyPhoneID").setValue(CMAINCONSTANTS.MY_CURRENT_PHONE_ID);
         // Теперь мы только смотрим с какого ID-устройства мы заходим(авторизируемся)!!!
         CMAINCONSTANTS.MY_CURRENT_PHONE_ID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-
-
+        Log.i(m_TAG, "CMAINCONSTANTS.MY_CURRENT_PHONE_ID = " + CMAINCONSTANTS.MY_CURRENT_PHONE_ID);
 
         //mDatabase.child("users").child("2").child("phoneID").setValue("R-71");
 
