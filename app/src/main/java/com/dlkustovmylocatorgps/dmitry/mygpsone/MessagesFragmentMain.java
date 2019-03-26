@@ -11,8 +11,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +35,7 @@ import com.google.firebase.storage.UploadTask;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 
 public class MessagesFragmentMain extends Fragment {
@@ -42,6 +45,12 @@ public class MessagesFragmentMain extends Fragment {
     private TextView editTextIncomingMsg;
     private DatabaseReference mDatabase;
     private DatabaseReference mDatabaseIncoming;
+    private ListView mListViewMsg;
+    private MyMsgAdapter m_MyMsgAdapter;
+    private ArrayList<CMessages> m_MyArrayMsg = null;
+            /*{"Java","C++","C#","CSS",
+            "HTML","XML",".Net","VisualBasic", "SQL", "Python", "PHP"};*/
+
     //mDatabaseReference
     private DatabaseReference mDatabaseReference;
 
@@ -79,8 +88,9 @@ public class MessagesFragmentMain extends Fragment {
         editTextOutMsg = (EditText)retView.findViewById(R.id.inputMsgText);
         editTextIncomingMsg = (TextView)retView.findViewById(R.id.textViewIncoming);
         editTextIncomingMsg.setMovementMethod(new ScrollingMovementMethod());
-
-
+        mListViewMsg = (ListView)retView.findViewById(R.id.ListUsersMsg);
+       /* m_AdapterMsg = new ArrayAdapter<String>(mListViewMsg.getContext(),R.layout.activity_listview, mobileArray);
+        mListViewMsg.setAdapter(adapter);*/
         //getting the views
        // textViewStatus = (TextView)retView.findViewById(R.id.textViewStatus);
        // editTextFilename = (EditText)retView.findViewById(R.id.editTextFileName);
@@ -152,14 +162,19 @@ public class MessagesFragmentMain extends Fragment {
                 {
                     for (DataSnapshot message : messageChildren)
                     {
+                        if(m_MyArrayMsg == null)
+                        {
+                            m_MyArrayMsg = new ArrayList<CMessages>();
+                        }
                         CMessages MyMsg = message.getValue(CMessages.class);
                         Log.i("IncommingMsg = ", "Типа получили сообщение сообщение!!!");
                         Log.i("IncommingMsg = ", MyMsg.msg_body);
-                        editTextIncomingMsg.append(MyMsg.msg_body);
-                        editTextIncomingMsg.append("\n");
-                        //textView.setText(MyMsg.msg_body);
+                        m_MyArrayMsg.add(MyMsg);
+                       // editTextIncomingMsg.append(MyMsg.msg_body);
+                        //editTextIncomingMsg.append("\n");
                     }
-
+                    m_MyMsgAdapter = new MyMsgAdapter(mListViewMsg.getContext(), m_MyArrayMsg);
+                    mListViewMsg.setAdapter(m_MyMsgAdapter);
                 }
 
                 catch (Exception ex)

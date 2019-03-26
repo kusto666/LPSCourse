@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/fragment_massages_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="60dp"
     android:orientation="vertical">
+
+    <ListView
+        android:id="@+id/ListUsersMsg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="240dp" />
 
     <TextView
         android:id="@+id/tvLMsg"
@@ -25,8 +32,10 @@
     <TextView
         android:id="@+id/textViewIncoming"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="120dp"
+        android:layout_alignParentTop="true"
         android:layout_marginLeft="10dp"
+        android:layout_marginTop="60dp"
         android:layout_marginRight="10dp"
         android:scrollbarAlwaysDrawHorizontalTrack="true"
         android:scrollbarAlwaysDrawVerticalTrack="true" />
@@ -35,7 +44,9 @@
         android:id="@+id/textView4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Исходящее сообщение"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="180dp"
+        android:text="Отправить текст"
         android:textAlignment="center"
         android:textColor="@color/colorPrimary"
         android:textSize="24sp"
@@ -44,10 +55,11 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp">
+        android:layout_marginBottom="120dp">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/inputMsgText"
@@ -62,8 +74,10 @@
         android:id="@+id/buttonSendMsg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:layout_marginBottom="60dp"
         android:layout_weight="0"
         android:text="Отправить" />
 
@@ -71,9 +85,11 @@
         android:id="@+id/buttonUploadFile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
         android:text="Загрузка" />
 
     <ProgressBar
@@ -83,22 +99,5 @@
         android:layout_gravity="center_horizontal"
         android:visibility="gone" />
 
-</LinearLayout>
-<!--<?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".MainActivity"
-    tools:showIn="@layout/app_bar_main">
+</RelativeLayout>
 
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:context="@layout/map"
-        tools:layout="@layout/fragment_dynamic_ios" />
-</android.support.constraint.ConstraintLayout>-->
