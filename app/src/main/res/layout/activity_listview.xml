@@ -8,6 +8,7 @@
         android:id="@+id/tvTimeMsgSending"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
         android:text="..." />
 
     <TextView
@@ -15,4 +16,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="..." />
+
+    <Button
+        android:id="@+id/btnLoadingFile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="скачать файл" />
 </LinearLayout>
