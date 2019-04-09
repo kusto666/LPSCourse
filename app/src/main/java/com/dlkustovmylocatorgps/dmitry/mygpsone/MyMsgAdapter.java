@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -53,11 +54,26 @@ public class MyMsgAdapter extends BaseAdapter {
             }
 
             CMessages p = getCMessage(position);
-
-            // заполняем View в пункте списка данными из товаров: наименование, цена
-            // и картинка
             ((TextView) view.findViewById(R.id.tvTimeMsgSending)).setText(p.msg_time);
             ((TextView) view.findViewById(R.id.tvBodyMsg)).setText(p.msg_body + "");
+            ((Button) view.findViewById(R.id.btnLoadingFile)).setText(p.msg_body);
+           /* if(p.msg_is_text.equals("false"))
+            {
+                ((TextView) view.findViewById(R.id.tvTimeMsgSending)).setText(p.msg_time);
+                ((TextView) view.findViewById(R.id.tvBodyMsg)).setVisibility(View.INVISIBLE);
+                ((Button) view.findViewById(R.id.btnLoadingFile)).setText(p.msg_body);
+            }
+            else
+            {
+                ((TextView) view.findViewById(R.id.tvTimeMsgSending)).setText(p.msg_time);
+                ((TextView) view.findViewById(R.id.tvBodyMsg)).setText(p.msg_body + "");
+                ((Button) view.findViewById(R.id.btnLoadingFile)).setVisibility(View.INVISIBLE);
+            }*/
+            // заполняем View в пункте списка данными из товаров: наименование, цена
+            // и картинка
+           /* ((TextView) view.findViewById(R.id.tvTimeMsgSending)).setText(p.msg_time);
+            ((TextView) view.findViewById(R.id.tvBodyMsg)).setText(p.msg_body + "");
+            ((TextView) view.findViewById(R.id.btnLoadingFile)).setText(p.msg_body);*/
            // ((ImageView) view.findViewById(R.id.ivImage)).setImageResource(p.image);
 
             //CheckBox cbBuy = (CheckBox) view.findViewById(R.id.cbBox);

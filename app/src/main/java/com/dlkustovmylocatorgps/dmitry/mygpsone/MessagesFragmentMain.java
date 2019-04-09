@@ -180,12 +180,19 @@ public class MessagesFragmentMain extends Fragment {
                 Iterable<DataSnapshot> messageChildren = messagesSnapshot.getChildren();
                 try
                 {
+                    if(m_MyArrayMsg == null)
+                    {
+
+                        m_MyArrayMsg = new ArrayList<CMessages>();
+                    }
+                    else
+                    {
+                        m_MyArrayMsg.clear();
+                    }
                     for (DataSnapshot message : messageChildren)
                     {
-                        if(m_MyArrayMsg == null)
-                        {
-                            m_MyArrayMsg = new ArrayList<CMessages>();
-                        }
+
+
                         CMessages MyMsg = message.getValue(CMessages.class);
                         Log.i("IncommingMsg = ", "Типа получили сообщение сообщение!!!");
                         Log.i("IncommingMsg = ", MyMsg.msg_body);
@@ -195,6 +202,7 @@ public class MessagesFragmentMain extends Fragment {
                     }
                     m_MyMsgAdapter = new MyMsgAdapter(mListViewMsg.getContext(), m_MyArrayMsg);
                     mListViewMsg.setAdapter(m_MyMsgAdapter);
+                    m_MyMsgAdapter.notifyDataSetChanged();
                 }
 
                 catch (Exception ex)
@@ -207,7 +215,7 @@ public class MessagesFragmentMain extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                System.out.println("The read failed: " + databaseError.getMessage());
             }
         });
 
