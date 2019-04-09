@@ -26,6 +26,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -179,16 +180,25 @@ public class FileInOutFragment extends Fragment
                 {
                     if (task.isSuccessful())
                     {
-                        Upload upload;// Объект для загрузки в realbase!!!
                         Uri downloadUri = task.getResult();
-                        upload = new Upload(editTextName.getText().toString(),
-                                downloadUri.toString(),
-                                downloadUri.toString());
+                        MainActivity.mDatabase = FirebaseDatabase.getInstance().getReference()
+                                .child("message_to_android");
+                        CDateTime newCurrDate = new CDateTime(); // Берем текущее время для записи в базу!!!
+                        CMessages.SendingMsgOrFile(MainActivity.mDatabase, newCurrDate,downloadUri.toString(),
+                                "no_read",editTextName.getText().toString(), false, null);
+
+
+
+                       // Upload upload;// Объект для загрузки в realbase!!!
+                       // downloadUri = task.getResult();
+                        //upload = new Upload(editTextName.getText().toString(),
+                        //        downloadUri.toString(),
+                         //       downloadUri.toString());
                                    //* taskSnapshot.getUploadSessionUri().toString());*//*
 
                         //adding an upload to firebase database
-                        String uploadId = MainActivity.mDatabase.push().getKey();
-                        MainActivity.mDatabase.child("my_files").child(uploadId).setValue(upload);
+                        //String uploadId = MainActivity.mDatabase.push().getKey();
+                        //MainActivity.mDatabase.child("my_files").child(uploadId).setValue(upload);
                         progressDialog.dismiss();
                         Toast.makeText(getActivity().getApplicationContext(), "Файл отправлен!", Toast.LENGTH_SHORT).show();
                     } else {

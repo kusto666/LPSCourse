@@ -1,5 +1,7 @@
 package com.dlkustovmylocatorgps.dmitry.mygpsone;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -135,11 +137,29 @@ public class MessagesFragmentMain extends Fragment {
                         .child("message_to_android");
                 try
                 {
-                    //mDatabase.child("msg_555555").child("msg_body").setValue(editTextOutMsg.getText().toString()); // Старый вариант!!!
-                    //mDatabase.child(CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER_MyPhoneID).child("msg_body").setValue(editTextOutMsg.getText().toString());
-                    CDateTime newCurrDate = new CDateTime(); // Берем текущее время для записи в базу!!!
-                    SendingMsgOrFile(mDatabase, newCurrDate,editTextOutMsg.getText().toString(),"no_read",editTextOutMsg.getText().toString(), true);
-                    editTextOutMsg.setText("");
+                    // Проверим, что сообщение не нулевой длины!!!
+                    // Иначе не посылаем - ЗАЧЕМ???)))
+                    if(editTextOutMsg.getText().toString().length() != 0)
+                    {
+                        //mDatabase.child("msg_555555").child("msg_body").setValue(editTextOutMsg.getText().toString()); // Старый вариант!!!
+                        //mDatabase.child(CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER_MyPhoneID).child("msg_body").setValue(editTextOutMsg.getText().toString());
+                        CDateTime newCurrDate = new CDateTime(); // Берем текущее время для записи в базу!!!
+                        CMessages.SendingMsgOrFile(mDatabase, newCurrDate,editTextOutMsg.getText().toString(),
+                                "no_read",editTextOutMsg.getText().toString(), true, editTextOutMsg);
+                        editTextOutMsg.setText("");
+                        String url = "https://firebasestorage.googleapis.com/v0/b/realtime-chat-46f4c.appspot.com/o/documents%2Fbf307aa5-79ae-4532-8128-ee394537b357.pdf?alt=media&token=2d0c5329-4717-4adc-9418-6614913e5bfa";
+                 /*   Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.parse(url), "application/pdf");
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    Intent newIntent = Intent.createChooser(intent, "Open File");
+                    try {
+                        startActivity(newIntent);
+                    } catch (ActivityNotFoundException e) {
+                        // Instruct the user to install a PDF reader here, or something
+                    }*/
+                    }
+
+
                 }
                 catch (Exception e)
                 {
@@ -263,7 +283,7 @@ public class MessagesFragmentMain extends Fragment {
                 });
 
     }*/
-    // Функция отправки сообщения или ссылки на файл в сообщении!!!
+    /*// Функция отправки сообщения или ссылки на файл в сообщении!!!
     private void SendingMsgOrFile(DatabaseReference mDatabaseTemp,CDateTime newCurrDate, String stMsgBody, String stMsgStatus,
                                   String stMsgTitle, Boolean bIsText)
     {
@@ -290,21 +310,21 @@ public class MessagesFragmentMain extends Fragment {
 
 
 
-		/* mDatabaseTemp.child(m_stFINISH_ID_MSG).child("msg_body").setValueAsync(stMsgBody);
+		*//* mDatabaseTemp.child(m_stFINISH_ID_MSG).child("msg_body").setValueAsync(stMsgBody);
 		 mDatabaseTemp.child(m_stFINISH_ID_MSG).child("msg_status").setValueAsync(stMsgStatus);
 		 mDatabaseTemp.child(m_stFINISH_ID_MSG).child("msg_time").
 		 setValueAsync(newCurrDate.GetPrintTime(newCurrDate.GetCurrLongTime()));
 		 mDatabaseTemp.child(m_stFINISH_ID_MSG).child("msg_unix_time").setValueAsync(newCurrDate.GetCurrLongTime());
-		 mDatabaseTemp.child(m_stFINISH_ID_MSG).child("msg_title").setValueAsync(stMsgBody);*/
+		 mDatabaseTemp.child(m_stFINISH_ID_MSG).child("msg_title").setValueAsync(stMsgBody);*//*
 
-		 /*if(bIsText)
+		 *//*if(bIsText)
 		 {
 			 mDatabaseTemp.child(m_stFINISH_ID_MSG).child("msg_is_text").setValueAsync("true");
 		 }
 		 else
 		 {
 			 mDatabaseTemp.child(m_stFINISH_ID_MSG).child("msg_is_text").setValueAsync("false");
-		 }*/
+		 }*//*
 
         //mDatabaseTemp.child(m_stFINISH_ID_MSG).child("msg_to_user").setValueAsync(CCONSTANTS_EVENTS_JOB.MY_CURRENT_TEMP_USER_FOR_MSG);
         String uploadId = mDatabaseTemp.push().getKey();
@@ -312,5 +332,5 @@ public class MessagesFragmentMain extends Fragment {
 
         editTextOutMsg.setText("");
         System.out.println("Типа послали сообщение!!!");
-    }
+    }*/
 }
