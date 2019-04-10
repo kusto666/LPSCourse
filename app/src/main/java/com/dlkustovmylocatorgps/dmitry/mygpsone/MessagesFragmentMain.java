@@ -1,5 +1,6 @@
 package com.dlkustovmylocatorgps.dmitry.mygpsone;
 
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,6 +31,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -62,13 +65,13 @@ public class MessagesFragmentMain extends Fragment {
     TextView textViewStatus;
 
     // Для работы с облаком FirebaseStorage
-    private FirebaseStorage m_myStorage;
+    public static FirebaseStorage m_myStorage;
     private StorageReference m_myRootRef;
     //this is the pic pdf code used in file chooser
     final static int PICK_PDF_CODE = 2342;
 
     StorageReference mStorageReference;
-
+    File localFile = null;
     private String m_TAG = "mmmmmm";// Для отслеживания событий - они мне ВАЖНЫ!!!
 
     @Nullable
@@ -77,6 +80,7 @@ public class MessagesFragmentMain extends Fragment {
     {
         m_myStorage = FirebaseStorage.getInstance();
         m_myRootRef = m_myStorage.getReference();
+        mStorageReference = m_myStorage.getReference();
         //getting firebase objects
         //mStorageReference = FirebaseStorage.getInstance().getReference();
        //mDatabaseReference = FirebaseDatabase.getInstance().getReference(com.dlkustovmylocatorgps.dmitry.mygpsone.CMAINCONSTANTS.DATABASE_PATH_UPLOADS);
@@ -91,11 +95,14 @@ public class MessagesFragmentMain extends Fragment {
         editTextIncomingMsg = (TextView)retView.findViewById(R.id.textViewIncoming);
         editTextIncomingMsg.setMovementMethod(new ScrollingMovementMethod());
         mListViewMsg = (ListView)retView.findViewById(R.id.ListUsersMsg);
-       /* m_AdapterMsg = new ArrayAdapter<String>(mListViewMsg.getContext(),R.layout.activity_listview, mobileArray);
-        mListViewMsg.setAdapter(adapter);*/
-        //getting the views
-       // textViewStatus = (TextView)retView.findViewById(R.id.textViewStatus);
-       // editTextFilename = (EditText)retView.findViewById(R.id.editTextFileName);
+        mListViewMsg.setClickable(true);
+       /* mListViewMsg.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.i("mPosMesg.msg_body = ", "-------------------------");
+            }
+        } );*/
+
         progressBar = (ProgressBar)retView.findViewById(R.id.progressbar);
 
         //attaching listeners to views
@@ -106,24 +113,41 @@ public class MessagesFragmentMain extends Fragment {
                 // Вызвале менеджер
                 android.support.v4.app.Fragment tempFragment = new FileInOutFragment();
                 MainActivity.replaceFragment(tempFragment,MainActivity.m_MainFragmentManager);
-               /* if(m_mapFragment.isVisible())
-                {
-                    m_mapFragment.getView().setVisibility(View.GONE);
-                }*/
                 Log.i(m_TAG, "Open FileInOutFragment!!!");
+               /* StorageReference storageRef = m_myStorage.getReferenceFromUrl(
+                        "https://firebasestorage.googleapis.com/v0/b/mygpsone-kusto1.appspot.com/o/uploads%2FScreenshot_2017-10-03-09-38-30-734_com.dlkustovmindcleaner.dmitry.mindcleaner.jpg?alt=media");
+                //StorageReference  islandRef = storageRef.child("file.txt");
 
+                File rootPath = new File(Environment.getExternalStorageDirectory(), "DCIM/MyFIREBASE");
+                if(!rootPath.exists()) {
+                    rootPath.mkdirs();
+                }
+                localFile = new File(rootPath,"Screenshot_2017-10-03-09-38-30-734_com.dlkustovmindcleaner.dmitry.mindcleaner.jpg");
+                try
+                {
+                    //localFile = File.createTempFile("images5555555", "jpg");
+                    storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            Log.e("firebase ",";local tem file created  created " +localFile.toString());
+                            //  updateDb(timestamp,localFile.toString(),position);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            Log.e("firebase ",";local tem file not created  created " +exception.toString());
+                        }
+                    });
+                }
+                catch (Exception ex)
+                {
 
-
-               // System.out.println("Test.pdf");
-               // MyUploadFile("Test.pdf");
-                /*switch (view.getId()) {
-                    case R.id.buttonUploadFile:
-                        //getPDF();
-                        break;
-                    //case R.id.textViewUploads:
-                       // startActivity(new Intent(this, ViewUploadsActivity.class));
-                    //    break;
+                    ex.printStackTrace();
                 }*/
+
+
+
+
             }
         });
 
@@ -147,16 +171,16 @@ public class MessagesFragmentMain extends Fragment {
                         CMessages.SendingMsgOrFile(mDatabase, newCurrDate,editTextOutMsg.getText().toString(),
                                 "no_read",editTextOutMsg.getText().toString(), true, editTextOutMsg);
                         editTextOutMsg.setText("");
-                        String url = "https://firebasestorage.googleapis.com/v0/b/realtime-chat-46f4c.appspot.com/o/documents%2Fbf307aa5-79ae-4532-8128-ee394537b357.pdf?alt=media&token=2d0c5329-4717-4adc-9418-6614913e5bfa";
-                 /*   Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setDataAndType(Uri.parse(url), "application/pdf");
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    Intent newIntent = Intent.createChooser(intent, "Open File");
-                    try {
-                        startActivity(newIntent);
-                    } catch (ActivityNotFoundException e) {
-                        // Instruct the user to install a PDF reader here, or something
-                    }*/
+                        String url = "https://firebasestorage.googleapis.com/v0/b/mygpsone-kusto1.appspot.com/o/uploads%2FScreenshot_2017-10-03-09-38-30-734_com.dlkustovmindcleaner.dmitry.mindcleaner.jpg?alt=media&token=c0334bcd-c988-407d-8113-535eb83ef584";
+                       /* Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setDataAndType(Uri.parse(url), "application/pdf");
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        Intent newIntent = Intent.createChooser(intent, "Open File");
+                        try {
+                            startActivity(newIntent);
+                        } catch (ActivityNotFoundException e) {
+                            // Instruct the user to install a PDF reader here, or something
+                        }*/
                     }
 
 
@@ -171,7 +195,8 @@ public class MessagesFragmentMain extends Fragment {
 
         mDatabaseIncoming = FirebaseDatabase.getInstance().getReference().child("message_to_android").child(CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER_MyPhoneID);
 
-        mDatabaseIncoming.orderByChild("msg_unix_time").addValueEventListener(new ValueEventListener() {
+        mDatabaseIncoming.orderByChild("msg_unix_time").addValueEventListener(new ValueEventListener()
+        {
             @Override
             public void onDataChange(@NonNull DataSnapshot arg0)
             {
@@ -191,8 +216,6 @@ public class MessagesFragmentMain extends Fragment {
                     }
                     for (DataSnapshot message : messageChildren)
                     {
-
-
                         CMessages MyMsg = message.getValue(CMessages.class);
                         Log.i("IncommingMsg = ", "Типа получили сообщение сообщение!!!");
                         Log.i("IncommingMsg = ", MyMsg.msg_body);
@@ -203,6 +226,58 @@ public class MessagesFragmentMain extends Fragment {
                     m_MyMsgAdapter = new MyMsgAdapter(mListViewMsg.getContext(), m_MyArrayMsg);
                     mListViewMsg.setAdapter(m_MyMsgAdapter);
                     m_MyMsgAdapter.notifyDataSetChanged();
+                    //mListViewMsg.setClickable(true);
+                    mListViewMsg.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                        @Override
+                        public void onItemClick(AdapterView<?> adapter, View v, int position, long id) {
+                            Log.i("mPosMesg.msg_body = ", "-------------------------");
+                            CMessages mPosMesg = (CMessages) adapter.getItemAtPosition(position);
+                        if(mPosMesg.msg_is_text.equals("false"))
+                        {
+                            final ProgressDialog progressDialog = new ProgressDialog(getContext());
+                            progressDialog.setTitle("Скачивание файла...");
+                            progressDialog.show();
+                                                 /*StorageReference storageRef = MessagesFragmentMain.m_myStorage.getReferenceFromUrl(
+                                                    "https://firebasestorage.googleapis.com/v0/b/mygpsone-kusto1.appspot.com/o/uploads%2FScreenshot_2017-10-03-09-38-30-734_com.dlkustovmindcleaner.dmitry.mindcleaner.jpg?alt=media");*/
+                            Log.i("mPosMesg.msg_body = ", mPosMesg.msg_body);
+                            StorageReference storageRef = MessagesFragmentMain.m_myStorage.getReferenceFromUrl(mPosMesg.msg_body);
+                            File rootPath = new File(Environment.getExternalStorageDirectory(), "DCIM/MyFIREBASE");// Это пока временно
+                            // Для проверки скачивания!!! Надо изменить на выбор через проводник(файловый менеджер)
+                            if(!rootPath.exists()) {
+                                rootPath.mkdirs();
+                            }
+                            /*localFile = new File(rootPath,"Screenshot_2017-10-03-09-38-30-734_com.dlkustovmindcleaner.dmitry.mindcleaner.jpg");*/
+                            localFile = new File(rootPath,mPosMesg.msg_title);
+                            try
+                            {
+                                //localFile = File.createTempFile("images5555555", "jpg");
+                                storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                        Log.e("firebase ",";local tem file created  created " +localFile.toString());
+                                        //  updateDb(timestamp,localFile.toString(),position);
+                                        progressDialog.dismiss();
+                                        Toast.makeText(getActivity().getApplicationContext(), "Файл скачан!", Toast.LENGTH_LONG).show();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception exception) {
+                                        Log.e("firebase ",";local tem file not created  created " +exception.toString());
+                                        progressDialog.dismiss();
+                                        Toast.makeText(getActivity().getApplicationContext(), "Ошибка скачивания файла!", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
+                            catch (Exception ex)
+                            {
+                                ex.printStackTrace();
+                            }
+                        }
+                    }
+
+
+                        });
                 }
 
                 catch (Exception ex)
