@@ -1,7 +1,9 @@
 package com.dlkustovmylocatorgps.dmitry.mygpsone;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -47,7 +49,7 @@ public class MessagesFragmentMain extends Fragment {
     private Button btnClick;
     private Button buttonUploadFile;
     private EditText editTextOutMsg;
-    private TextView editTextIncomingMsg;
+   // private TextView editTextIncomingMsg;
     private DatabaseReference mDatabase;
     private DatabaseReference mDatabaseIncoming;
     private ListView mListViewMsg;
@@ -92,8 +94,8 @@ public class MessagesFragmentMain extends Fragment {
         btnClick = (Button)retView.findViewById(R.id.buttonSendMsg);
         buttonUploadFile = (Button)retView.findViewById(R.id.buttonUploadFile);
         editTextOutMsg = (EditText)retView.findViewById(R.id.inputMsgText);
-        editTextIncomingMsg = (TextView)retView.findViewById(R.id.textViewIncoming);
-        editTextIncomingMsg.setMovementMethod(new ScrollingMovementMethod());
+        //editTextIncomingMsg = (TextView)retView.findViewById(R.id.textViewIncoming);
+       // editTextIncomingMsg.setMovementMethod(new ScrollingMovementMethod());
         mListViewMsg = (ListView)retView.findViewById(R.id.ListUsersMsg);
         mListViewMsg.setClickable(true);
        /* mListViewMsg.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -193,7 +195,9 @@ public class MessagesFragmentMain extends Fragment {
             }
         });
 
-        mDatabaseIncoming = FirebaseDatabase.getInstance().getReference().child("message_to_android").child(CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER_MyPhoneID);
+        mDatabaseIncoming = FirebaseDatabase.getInstance()
+                .getReference().child("message_to_android")
+                .child(CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER_MyPhoneID);
 
         mDatabaseIncoming.orderByChild("msg_unix_time").addValueEventListener(new ValueEventListener()
         {
@@ -226,53 +230,70 @@ public class MessagesFragmentMain extends Fragment {
                     m_MyMsgAdapter = new MyMsgAdapter(mListViewMsg.getContext(), m_MyArrayMsg);
                     mListViewMsg.setAdapter(m_MyMsgAdapter);
                     m_MyMsgAdapter.notifyDataSetChanged();
+                    mListViewMsg.setSelection(m_MyMsgAdapter.getCount() - 1);// Опускаемся сразу в самый низ списка сообщений!!!
                     //mListViewMsg.setClickable(true);
                     mListViewMsg.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                         @Override
                         public void onItemClick(AdapterView<?> adapter, View v, int position, long id) {
                             Log.i("mPosMesg.msg_body = ", "-------------------------");
-                            CMessages mPosMesg = (CMessages) adapter.getItemAtPosition(position);
+                           final CMessages mPosMesg = (CMessages) adapter.getItemAtPosition(position);
                         if(mPosMesg.msg_is_text.equals("false"))
                         {
-                            final ProgressDialog progressDialog = new ProgressDialog(getContext());
-                            progressDialog.setTitle("Скачивание файла...");
-                            progressDialog.show();
+                            new AlertDialog.Builder(getContext())
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .setTitle("СКАЧИВАНИЕ...")
+                                    .setMessage("СКАЧАТЬ ФАЙЛ?")
+                                    .setPositiveButton("Да", new DialogInterface.OnClickListener()
+                                    {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which)
+                                        {
+                                            final ProgressDialog progressDialog = new ProgressDialog(getContext());
+                                            progressDialog.setTitle("Скачивание файла...");
+                                            progressDialog.show();
                                                  /*StorageReference storageRef = MessagesFragmentMain.m_myStorage.getReferenceFromUrl(
                                                     "https://firebasestorage.googleapis.com/v0/b/mygpsone-kusto1.appspot.com/o/uploads%2FScreenshot_2017-10-03-09-38-30-734_com.dlkustovmindcleaner.dmitry.mindcleaner.jpg?alt=media");*/
-                            Log.i("mPosMesg.msg_body = ", mPosMesg.msg_body);
-                            StorageReference storageRef = MessagesFragmentMain.m_myStorage.getReferenceFromUrl(mPosMesg.msg_body);
-                            File rootPath = new File(Environment.getExternalStorageDirectory(), "DCIM/MyFIREBASE");// Это пока временно
-                            // Для проверки скачивания!!! Надо изменить на выбор через проводник(файловый менеджер)
-                            if(!rootPath.exists()) {
-                                rootPath.mkdirs();
-                            }
-                            /*localFile = new File(rootPath,"Screenshot_2017-10-03-09-38-30-734_com.dlkustovmindcleaner.dmitry.mindcleaner.jpg");*/
-                            localFile = new File(rootPath,mPosMesg.msg_title);
-                            try
-                            {
-                                //localFile = File.createTempFile("images5555555", "jpg");
-                                storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                                        Log.e("firebase ",";local tem file created  created " +localFile.toString());
-                                        //  updateDb(timestamp,localFile.toString(),position);
-                                        progressDialog.dismiss();
-                                        Toast.makeText(getActivity().getApplicationContext(), "Файл скачан!", Toast.LENGTH_LONG).show();
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception exception) {
-                                        Log.e("firebase ",";local tem file not created  created " +exception.toString());
-                                        progressDialog.dismiss();
-                                        Toast.makeText(getActivity().getApplicationContext(), "Ошибка скачивания файла!", Toast.LENGTH_LONG).show();
-                                    }
-                                });
-                            }
-                            catch (Exception ex)
-                            {
-                                ex.printStackTrace();
-                            }
+                                            Log.i("mPosMesg.msg_body = ", mPosMesg.msg_body);
+                                            StorageReference storageRef = MessagesFragmentMain.m_myStorage.getReferenceFromUrl(mPosMesg.msg_body);
+                                            File rootPath = new File(Environment.getExternalStorageDirectory(), "DCIM/MyFIREBASE");// Это пока временно
+                                            // Для проверки скачивания!!! Надо изменить на выбор через проводник(файловый менеджер)
+                                            if(!rootPath.exists()) {
+                                                rootPath.mkdirs();
+                                            }
+                                            /*localFile = new File(rootPath,"Screenshot_2017-10-03-09-38-30-734_com.dlkustovmindcleaner.dmitry.mindcleaner.jpg");*/
+                                            localFile = new File(rootPath,mPosMesg.msg_title);
+                                            try
+                                            {
+                                                //localFile = File.createTempFile("images5555555", "jpg");
+                                                storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                                    @Override
+                                                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                                        Log.e("firebase ",";local tem file created  created " +localFile.toString());
+                                                        //  updateDb(timestamp,localFile.toString(),position);
+                                                        progressDialog.dismiss();
+                                                        Toast.makeText(getActivity().getApplicationContext(), "Файл скачан!", Toast.LENGTH_LONG).show();
+                                                    }
+                                                }).addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception exception) {
+                                                        Log.e("firebase ",";local tem file not created  created " +exception.toString());
+                                                        progressDialog.dismiss();
+                                                        Toast.makeText(getActivity().getApplicationContext(), "Ошибка скачивания файла!", Toast.LENGTH_LONG).show();
+                                                    }
+                                                });
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                ex.printStackTrace();
+                                            }
+                                        }
+
+                                    })
+                                    .setNegativeButton("Нет", null)
+                                    .show();
+
+
                         }
                     }
 

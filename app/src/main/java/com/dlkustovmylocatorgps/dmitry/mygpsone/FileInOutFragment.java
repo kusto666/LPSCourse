@@ -26,6 +26,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -181,10 +182,10 @@ public class FileInOutFragment extends Fragment
                     if (task.isSuccessful())
                     {
                         Uri downloadUri = task.getResult();
-                        MainActivity.mDatabase = FirebaseDatabase.getInstance().getReference()
+                        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference()
                                 .child("message_to_android");
                         CDateTime newCurrDate = new CDateTime(); // Берем текущее время для записи в базу!!!
-                        CMessages.SendingMsgOrFile(MainActivity.mDatabase, newCurrDate,downloadUri.toString(),
+                        CMessages.SendingMsgOrFile(mDatabase, newCurrDate,downloadUri.toString(),
                                 "no_read",editTextName.getText().toString(), false, null);
 
 

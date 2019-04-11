@@ -28,6 +28,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -57,8 +58,9 @@ public class MainActivity extends AppCompatActivity
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private GoogleMap mMap;
+    Button btnGoToMessages;
     public static String m_TAG = "555555";
-    public static DatabaseReference mDatabase;
+    //public static DatabaseReference mDatabase;
 
     Location mLastLocation;
     Double m_dLatitude = 0.0;
@@ -69,8 +71,13 @@ public class MainActivity extends AppCompatActivity
     SupportMapFragment m_mapFragment = null;// Фрагмент карты!!!
 
     public static FragmentManager m_MainFragmentManager;
+    public static FragmentTransaction m_MainFragmentTransaction;
+
 
     DrawerLayout m_drawer_layaout;
+
+    static int m_iSelectFrgOrderNow = 0; // Эта хитрая переменная отслеживает последний выбранный фрагмент
+    // и при изменении ориентации экрана , перезаписывает
 /*
     private FirebaseAuth mAuth;
     // [START declare_auth_listener]
@@ -104,7 +111,7 @@ public class MainActivity extends AppCompatActivity
 
         // Это было раньше, теперь мы не создаем из приложения андроид запись в базе , таблицы 'users'
         // типа: MyPhoneID_*********
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+       // mDatabase = FirebaseDatabase.getInstance().getReference();
        // mDatabase.child("users").child("MyPhoneID_" + CMAINCONSTANTS.MY_CURRENT_PHONE_ID)
        //         .child("MyPhoneID").setValue(CMAINCONSTANTS.MY_CURRENT_PHONE_ID);
         // Теперь мы только смотрим с какого ID-устройства мы заходим(авторизируемся)!!!
@@ -118,12 +125,22 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        btnGoToMessages = (Button)findViewById(R.id.btnGoToMessages);
         Toast.makeText(this, CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER,
                 Toast.LENGTH_LONG).show();
-       // android.support.v4.app.Fragment IOSFragment = new IOSFragment();
-       // this.setDefaultFragment(IOSFragment);
-/////////////////////////////////////////////////////////////
 
+/////////////////////////////////////////////////////////////
+        btnGoToMessages.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View view) {
+                   android.support.v4.app.Fragment tempFragment = new MessagesFragmentMain();
+                   replaceFragment(tempFragment,m_MainFragmentManager);
+                   if(m_mapFragment.isVisible())
+                   {
+                       m_mapFragment.getView().setVisibility(View.GONE);
+                   }
+               }
+           });
      //   FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
      //   fab.setOnClickListener(new View.OnClickListener() {
     //        @Override
@@ -152,6 +169,10 @@ public class MainActivity extends AppCompatActivity
                 .findFragmentById(R.id.map);
         m_mapFragment.getMapAsync(this);
         m_MainFragmentManager = this.getSupportFragmentManager();// Менеджер фрагментов самфй главный
+
+
+        //m_MainFragmentTransaction = m_MainFragmentManager.beginTransaction();// Создаем транзакцию фрагментов один раз при загрузке!!!
+        //replaceFragment(m_mapFragment,m_MainFragmentManager);
         // в нем все и подменяем!!!
 /*// [START initialize_auth]
         mAuth = FirebaseAuth.getInstance();
@@ -236,17 +257,10 @@ public class MainActivity extends AppCompatActivity
     // Replace current Fragment with the destination Fragment.
     public static void replaceFragment(android.support.v4.app.Fragment destFragment,FragmentManager fragmentManager)
     {
-        // First get FragmentManager object.
-        //fragmentManager = this.getSupportFragmentManager();
-
-        // Begin Fragment transaction.
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-        // Replace the layout holder with the required Fragment object.
-        fragmentTransaction.replace(R.id.dynamic_fragment_frame_layout, destFragment);
-
-        // Commit the Fragment replace action.
-        fragmentTransaction.commit();
+        fragmentManager.beginTransaction()
+                .replace(R.id.dynamic_fragment_frame_layout, destFragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     protected boolean shouldAskPermissions() {
@@ -311,6 +325,7 @@ public class MainActivity extends AppCompatActivity
             //DatabaseReference ref = mDatabase.child("users");
             //Query phoneQuery = ref.orderByChild(phoneNo).equalTo("+923336091371");
             //mDatabase.child("users").child("2").addValueEventListener(new ValueEventListener() {
+            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
             mDatabase.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {

@@ -5,15 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="60dp"
+    android:background="@color/common_google_signin_btn_text_dark_default"
     android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:text="Здесь будут отметки"
-        android:textSize="60dp"
         android:textColor="@android:color/holo_red_light"
-        android:gravity="center"/>
+        android:textSize="60dp" />
 
 </LinearLayout>
 <!--<?xml version="1.0" encoding="utf-8"?>

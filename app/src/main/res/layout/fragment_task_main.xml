@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="60dp"
+    android:background="@color/common_google_signin_btn_text_dark_default"
     android:orientation="vertical">
 
     <LinearLayout
