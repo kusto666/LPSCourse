@@ -9,40 +9,44 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3"
+        android:layout_weight="2"
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-
-
         <TextView
-            android:id="@+id/title_text"
-            android:layout_width="wrap_content"
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginRight="8dp"
+            android:text="MyGPSx"
+            android:textAlignment="center"
+            android:textSize="48sp"
+            android:textStyle="bold" />
 
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="вход"
+            android:textAlignment="center"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/emailpassword_title_text"
- />
-
-        <TextView
-            android:id="@+id/status"
-
-            android:text="@string/signed_out"
-            android:layout_width="wrap_content"
-            android:layout_height="20dp" />
-
-        <TextView
-            android:id="@+id/detail"
-            tools:text="Firebase User ID: 123456789abc"
-            android:layout_height="20dp"
-            android:layout_width="wrap_content" />
-
+            android:textAlignment="center"
+            android:textStyle="italic" />
     </LinearLayout>
 
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:gravity="center_vertical">
 
         <LinearLayout
@@ -84,26 +88,16 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/sign_in"
-/>
+                android:text="@string/sign_in" />
 
-            <Button
-                android:id="@+id/email_create_account_button"
+            <CheckBox
+                android:id="@+id/chBoxIsSaveLoginPass"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/create_account"
- />
+                android:text="@string/save_login_pass" />
+
         </LinearLayout>
-
-        <Button
-            android:id="@+id/sign_out_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="@string/sign_out"
-
-            android:visibility="gone" />
 
     </RelativeLayout>
 
