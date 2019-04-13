@@ -17,6 +17,7 @@ public class CMessages
     public Long msg_unix_time;
     public String msg_is_text;// Если = true - то текст и никакой ссылки для скачивания файла!!
     // Если = false - то наоборот!!!
+
     
 
 
@@ -69,8 +70,14 @@ public class CMessages
         bMessss.msg_status = stMsgStatus;
         bMessss.msg_time = newCurrDate.GetPrintTime(newCurrDate.GetCurrLongTime());
         bMessss.msg_title = stMsgTitle;
-        bMessss.msg_to_user = CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER_MyPhoneID;
-        bMessss.msg_unix_time = newCurrDate.GetCurrLongTime();
+
+        bMessss.msg_to_user = "disp777";// Это кому. В данном случае диспетчеру
+        // Он пока один, потому для начала обзовем его к примеру просто: disp777
+
+        bMessss.msg_from_user = CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER_MyPhoneID;// От кого, т.е. в данном случае
+        // этого планшета, пример: ==>>> msg_to_user: "MyPhoneID_fnlzxpbvgra"
+
+        bMessss.msg_unix_time = newCurrDate.GetCurrLongTime();// Время создания сообщения - прямо СЕЙЧАС!!!
 
 		String uploadId = mDatabaseTemp.push().getKey();
         mDatabaseTemp.child(CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER_MyPhoneID).child(uploadId).setValue(bMessss);

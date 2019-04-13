@@ -26,7 +26,7 @@
     <string name="path_doc">Path_Doc:</string>
 
 
-    //////////////////////////////////////////////////////////////////////////////
+    <!--//////////////////////////////////////////////////////////////////////////////-->
     <string name="label_google_sign_in">Firebase + Google Sign In</string>
     <string name="desc_google_sign_in">Use a Google Sign In credential to authenticate with Firebase.</string>
 
@@ -112,6 +112,8 @@
     <string name="id_fmt">User ID: %s</string>
     <string name="email_fmt">Email: %s</string>
 
+    <!-- Для сообщений в activity_listview.xml-->
+    <string name="msg_is_read">не прочитано!</string>
 
 </resources>
 
