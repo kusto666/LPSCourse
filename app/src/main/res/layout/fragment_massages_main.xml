@@ -25,7 +25,7 @@
         android:editable="false"
         android:text="Входящие сообщение"
         android:textAlignment="center"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/color_red"
         android:textSize="24sp"
         android:textStyle="bold" />
 

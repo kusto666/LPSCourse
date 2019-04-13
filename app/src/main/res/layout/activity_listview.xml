@@ -13,7 +13,7 @@
             android:id="@+id/tvTimeMsgSending"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="8"
+            android:layout_weight="3"
             android:background="@color/color_green"
             android:text="..."
             android:textColor="@android:color/background_light" />

@@ -54,7 +54,7 @@ public class MessagesFragmentMain extends Fragment {
     private DatabaseReference mDatabaseIncoming;
     private ListView mListViewMsg;
     private MyMsgAdapter m_MyMsgAdapter;
-    private ArrayList<CMessages> m_MyArrayMsg = null;
+    public static ArrayList<CMessages> m_MyArrayMsg = null;
             /*{"Java","C++","C#","CSS",
             "HTML","XML",".Net","VisualBasic", "SQL", "Python", "PHP"};*/
 
