@@ -184,6 +184,10 @@ public class MessagesFragmentMain extends Fragment {
                             // Instruct the user to install a PDF reader here, or something
                         }*/
                     }
+                    else
+                    {
+                        Toast.makeText(getContext(), "Сообщение не может быть пустым!", Toast.LENGTH_SHORT).show();
+                    }
 
 
                 }

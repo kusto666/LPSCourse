@@ -112,11 +112,30 @@ public class FileInOutFragment extends Fragment
 
     private void chooseImage()
     {
-        Intent intent = new Intent();
-       /* intent.setType("image/*");*/
-        intent.setType("file/*");
+
+        Intent intent = new Intent();// Старый вар.
+        intent.setType("*/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Выберите документ"), PICK_IMAGE_REQUEST);
+       /* String path = "/";
+        Intent intent = getContext().getPackageManager().getLaunchIntentForPackage("com.estrongs.android.pop");
+
+
+        if (intent != null) {
+            // If the application is avilable
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            Uri uri = Uri.parse(path);
+            intent.setDataAndType(uri, "resource/folder");
+            this.startActivity(intent);
+        }
+        else {
+            // Play store to install app
+            intent = new Intent(Intent.ACTION_VIEW);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setData(Uri.parse("market://details?id=" +
+                    "com.estrongs.android.pop"));
+            this.startActivity(intent);
+        }*/
     }
 
     @Override
