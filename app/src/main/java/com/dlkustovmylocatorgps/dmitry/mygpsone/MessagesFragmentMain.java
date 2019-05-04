@@ -1,5 +1,10 @@
 package com.dlkustovmylocatorgps.dmitry.mygpsone;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -11,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,6 +33,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -42,12 +49,12 @@ public class MessagesFragmentMain extends Fragment {
     private Button btnClick;
     private Button buttonUploadFile;
     private EditText editTextOutMsg;
-    private TextView editTextIncomingMsg;
+   // private TextView editTextIncomingMsg;
     private DatabaseReference mDatabase;
     private DatabaseReference mDatabaseIncoming;
     private ListView mListViewMsg;
     private MyMsgAdapter m_MyMsgAdapter;
-    private ArrayList<CMessages> m_MyArrayMsg = null;
+    public static ArrayList<CMessages> m_MyArrayMsg = null;
             /*{"Java","C++","C#","CSS",
             "HTML","XML",".Net","VisualBasic", "SQL", "Python", "PHP"};*/
 
@@ -60,13 +67,13 @@ public class MessagesFragmentMain extends Fragment {
     TextView textViewStatus;
 
     // Для работы с облаком FirebaseStorage
-    private FirebaseStorage m_myStorage;
+    public static FirebaseStorage m_myStorage;
     private StorageReference m_myRootRef;
     //this is the pic pdf code used in file chooser
     final static int PICK_PDF_CODE = 2342;
 
     StorageReference mStorageReference;
-
+    File localFile = null;
     private String m_TAG = "mmmmmm";// Для отслеживания событий - они мне ВАЖНЫ!!!
 
     @Nullable
@@ -75,6 +82,7 @@ public class MessagesFragmentMain extends Fragment {
     {
         m_myStorage = FirebaseStorage.getInstance();
         m_myRootRef = m_myStorage.getReference();
+        mStorageReference = m_myStorage.getReference();
         //getting firebase objects
         //mStorageReference = FirebaseStorage.getInstance().getReference();
        //mDatabaseReference = FirebaseDatabase.getInstance().getReference(com.dlkustovmylocatorgps.dmitry.mygpsone.CMAINCONSTANTS.DATABASE_PATH_UPLOADS);
@@ -86,14 +94,17 @@ public class MessagesFragmentMain extends Fragment {
         btnClick = (Button)retView.findViewById(R.id.buttonSendMsg);
         buttonUploadFile = (Button)retView.findViewById(R.id.buttonUploadFile);
         editTextOutMsg = (EditText)retView.findViewById(R.id.inputMsgText);
-        editTextIncomingMsg = (TextView)retView.findViewById(R.id.textViewIncoming);
-        editTextIncomingMsg.setMovementMethod(new ScrollingMovementMethod());
+        //editTextIncomingMsg = (TextView)retView.findViewById(R.id.textViewIncoming);
+       // editTextIncomingMsg.setMovementMethod(new ScrollingMovementMethod());
         mListViewMsg = (ListView)retView.findViewById(R.id.ListUsersMsg);
-       /* m_AdapterMsg = new ArrayAdapter<String>(mListViewMsg.getContext(),R.layout.activity_listview, mobileArray);
-        mListViewMsg.setAdapter(adapter);*/
-        //getting the views
-       // textViewStatus = (TextView)retView.findViewById(R.id.textViewStatus);
-       // editTextFilename = (EditText)retView.findViewById(R.id.editTextFileName);
+        mListViewMsg.setClickable(true);
+       /* mListViewMsg.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.i("mPosMesg.msg_body = ", "-------------------------");
+            }
+        } );*/
+
         progressBar = (ProgressBar)retView.findViewById(R.id.progressbar);
 
         //attaching listeners to views
@@ -104,24 +115,41 @@ public class MessagesFragmentMain extends Fragment {
                 // Вызвале менеджер
                 android.support.v4.app.Fragment tempFragment = new FileInOutFragment();
                 MainActivity.replaceFragment(tempFragment,MainActivity.m_MainFragmentManager);
-               /* if(m_mapFragment.isVisible())
-                {
-                    m_mapFragment.getView().setVisibility(View.GONE);
-                }*/
                 Log.i(m_TAG, "Open FileInOutFragment!!!");
+               /* StorageReference storageRef = m_myStorage.getReferenceFromUrl(
+                        "https://firebasestorage.googleapis.com/v0/b/mygpsone-kusto1.appspot.com/o/uploads%2FScreenshot_2017-10-03-09-38-30-734_com.dlkustovmindcleaner.dmitry.mindcleaner.jpg?alt=media");
+                //StorageReference  islandRef = storageRef.child("file.txt");
 
+                File rootPath = new File(Environment.getExternalStorageDirectory(), "DCIM/MyFIREBASE");
+                if(!rootPath.exists()) {
+                    rootPath.mkdirs();
+                }
+                localFile = new File(rootPath,"Screenshot_2017-10-03-09-38-30-734_com.dlkustovmindcleaner.dmitry.mindcleaner.jpg");
+                try
+                {
+                    //localFile = File.createTempFile("images5555555", "jpg");
+                    storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            Log.e("firebase ",";local tem file created  created " +localFile.toString());
+                            //  updateDb(timestamp,localFile.toString(),position);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            Log.e("firebase ",";local tem file not created  created " +exception.toString());
+                        }
+                    });
+                }
+                catch (Exception ex)
+                {
 
-
-               // System.out.println("Test.pdf");
-               // MyUploadFile("Test.pdf");
-                /*switch (view.getId()) {
-                    case R.id.buttonUploadFile:
-                        //getPDF();
-                        break;
-                    //case R.id.textViewUploads:
-                       // startActivity(new Intent(this, ViewUploadsActivity.class));
-                    //    break;
+                    ex.printStackTrace();
                 }*/
+
+
+
+
             }
         });
 
@@ -135,11 +163,33 @@ public class MessagesFragmentMain extends Fragment {
                         .child("message_to_android");
                 try
                 {
-                    //mDatabase.child("msg_555555").child("msg_body").setValue(editTextOutMsg.getText().toString()); // Старый вариант!!!
-                    //mDatabase.child(CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER_MyPhoneID).child("msg_body").setValue(editTextOutMsg.getText().toString());
-                    CDateTime newCurrDate = new CDateTime(); // Берем текущее время для записи в базу!!!
-                    SendingMsgOrFile(mDatabase, newCurrDate,editTextOutMsg.getText().toString(),"no_read",editTextOutMsg.getText().toString(), true);
-                    editTextOutMsg.setText("");
+                    // Проверим, что сообщение не нулевой длины!!!
+                    // Иначе не посылаем - ЗАЧЕМ???)))
+                    if(editTextOutMsg.getText().toString().length() != 0)
+                    {
+                        //mDatabase.child("msg_555555").child("msg_body").setValue(editTextOutMsg.getText().toString()); // Старый вариант!!!
+                        //mDatabase.child(CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER_MyPhoneID).child("msg_body").setValue(editTextOutMsg.getText().toString());
+                        CDateTime newCurrDate = new CDateTime(); // Берем текущее время для записи в базу!!!
+                        CMessages.SendingMsgOrFile(mDatabase, newCurrDate,editTextOutMsg.getText().toString(),
+                                "no_read",editTextOutMsg.getText().toString(), true, editTextOutMsg);
+                        editTextOutMsg.setText("");
+                        String url = "https://firebasestorage.googleapis.com/v0/b/mygpsone-kusto1.appspot.com/o/uploads%2FScreenshot_2017-10-03-09-38-30-734_com.dlkustovmindcleaner.dmitry.mindcleaner.jpg?alt=media&token=c0334bcd-c988-407d-8113-535eb83ef584";
+                       /* Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setDataAndType(Uri.parse(url), "application/pdf");
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        Intent newIntent = Intent.createChooser(intent, "Open File");
+                        try {
+                            startActivity(newIntent);
+                        } catch (ActivityNotFoundException e) {
+                            // Instruct the user to install a PDF reader here, or something
+                        }*/
+                    }
+                    else
+                    {
+                        Toast.makeText(getContext(), "Сообщение не может быть пустым!", Toast.LENGTH_SHORT).show();
+                    }
+
+
                 }
                 catch (Exception e)
                 {
@@ -149,9 +199,12 @@ public class MessagesFragmentMain extends Fragment {
             }
         });
 
-        mDatabaseIncoming = FirebaseDatabase.getInstance().getReference().child("message_to_android").child(CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER_MyPhoneID);
+        mDatabaseIncoming = FirebaseDatabase.getInstance()
+                .getReference().child("message_to_android")
+                .child(CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER_MyPhoneID);
 
-        mDatabaseIncoming.orderByChild("msg_unix_time").addValueEventListener(new ValueEventListener() {
+        mDatabaseIncoming.orderByChild("msg_unix_time").addValueEventListener(new ValueEventListener()
+        {
             @Override
             public void onDataChange(@NonNull DataSnapshot arg0)
             {
@@ -160,12 +213,17 @@ public class MessagesFragmentMain extends Fragment {
                 Iterable<DataSnapshot> messageChildren = messagesSnapshot.getChildren();
                 try
                 {
+                    if(m_MyArrayMsg == null)
+                    {
+
+                        m_MyArrayMsg = new ArrayList<CMessages>();
+                    }
+                    else
+                    {
+                        m_MyArrayMsg.clear();
+                    }
                     for (DataSnapshot message : messageChildren)
                     {
-                        if(m_MyArrayMsg == null)
-                        {
-                            m_MyArrayMsg = new ArrayList<CMessages>();
-                        }
                         CMessages MyMsg = message.getValue(CMessages.class);
                         Log.i("IncommingMsg = ", "Типа получили сообщение сообщение!!!");
                         Log.i("IncommingMsg = ", MyMsg.msg_body);
@@ -175,6 +233,76 @@ public class MessagesFragmentMain extends Fragment {
                     }
                     m_MyMsgAdapter = new MyMsgAdapter(mListViewMsg.getContext(), m_MyArrayMsg);
                     mListViewMsg.setAdapter(m_MyMsgAdapter);
+                    m_MyMsgAdapter.notifyDataSetChanged();
+                    mListViewMsg.setSelection(m_MyMsgAdapter.getCount() - 1);// Опускаемся сразу в самый низ списка сообщений!!!
+                    //mListViewMsg.setClickable(true);
+                    mListViewMsg.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                        @Override
+                        public void onItemClick(AdapterView<?> adapter, View v, int position, long id) {
+                            Log.i("mPosMesg.msg_body = ", "-------------------------");
+                           final CMessages mPosMesg = (CMessages) adapter.getItemAtPosition(position);
+                        if(mPosMesg.msg_is_text.equals("false"))
+                        {
+                            new AlertDialog.Builder(getContext())
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .setTitle("СКАЧИВАНИЕ...")
+                                    .setMessage("СКАЧАТЬ ФАЙЛ?")
+                                    .setPositiveButton("Да", new DialogInterface.OnClickListener()
+                                    {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which)
+                                        {
+                                            final ProgressDialog progressDialog = new ProgressDialog(getContext());
+                                            progressDialog.setTitle("Скачивание файла...");
+                                            progressDialog.show();
+                                                 /*StorageReference storageRef = MessagesFragmentMain.m_myStorage.getReferenceFromUrl(
+                                                    "https://firebasestorage.googleapis.com/v0/b/mygpsone-kusto1.appspot.com/o/uploads%2FScreenshot_2017-10-03-09-38-30-734_com.dlkustovmindcleaner.dmitry.mindcleaner.jpg?alt=media");*/
+                                            Log.i("mPosMesg.msg_body = ", mPosMesg.msg_body);
+                                            StorageReference storageRef = MessagesFragmentMain.m_myStorage.getReferenceFromUrl(mPosMesg.msg_body);
+                                            File rootPath = new File(Environment.getExternalStorageDirectory(), "DCIM/MyFIREBASE");// Это пока временно
+                                            // Для проверки скачивания!!! Надо изменить на выбор через проводник(файловый менеджер)
+                                            if(!rootPath.exists()) {
+                                                rootPath.mkdirs();
+                                            }
+                                            /*localFile = new File(rootPath,"Screenshot_2017-10-03-09-38-30-734_com.dlkustovmindcleaner.dmitry.mindcleaner.jpg");*/
+                                            localFile = new File(rootPath,mPosMesg.msg_title);
+                                            try
+                                            {
+                                                //localFile = File.createTempFile("images5555555", "jpg");
+                                                storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                                    @Override
+                                                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                                        Log.e("firebase ",";local tem file created  created " +localFile.toString());
+                                                        //  updateDb(timestamp,localFile.toString(),position);
+                                                        progressDialog.dismiss();
+                                                        Toast.makeText(getActivity().getApplicationContext(), "Файл скачан!", Toast.LENGTH_LONG).show();
+                                                    }
+                                                }).addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception exception) {
+                                                        Log.e("firebase ",";local tem file not created  created " +exception.toString());
+                                                        progressDialog.dismiss();
+                                                        Toast.makeText(getActivity().getApplicationContext(), "Ошибка скачивания файла!", Toast.LENGTH_LONG).show();
+                                                    }
+                                                });
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                ex.printStackTrace();
+                                            }
+                                        }
+
+                                    })
+                                    .setNegativeButton("Нет", null)
+                                    .show();
+
+
+                        }
+                    }
+
+
+                        });
                 }
 
                 catch (Exception ex)
@@ -187,7 +315,7 @@ public class MessagesFragmentMain extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                System.out.println("The read failed: " + databaseError.getMessage());
             }
         });
 
@@ -228,89 +356,5 @@ public class MessagesFragmentMain extends Fragment {
 
 
 
-    }
-    //this method is uploading the file
-    //the code is same as the previous tutorial
-    //so we are not explaining it
-/*    private void uploadFile(Uri data) {
-        //progressBar.setVisibility(View.VISIBLE);
-        StorageReference sRef = mStorageReference.child(com.dlkustovmylocatorgps.dmitry.mygpsone.CMAINCONSTANTS.STORAGE_PATH_UPLOADS + System.currentTimeMillis() + ".pdf");
-        sRef.putFile(data)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @SuppressWarnings("VisibleForTests")
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        progressBar.setVisibility(View.GONE);
-                        textViewStatus.setText("File Uploaded Successfully");
-
-                        Upload upload = new Upload(editTextFilename.getText().toString(), taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
-                        mDatabaseReference.child(mDatabaseReference.push().getKey()).setValue(upload);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                })
-                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @SuppressWarnings("VisibleForTests")
-                    @Override
-                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                        textViewStatus.setText((int) progress + "% Uploading...");
-                    }
-                });
-
-    }*/
-    // Функция отправки сообщения или ссылки на файл в сообщении!!!
-    private void SendingMsgOrFile(DatabaseReference mDatabaseTemp,CDateTime newCurrDate, String stMsgBody, String stMsgStatus,
-                                  String stMsgTitle, Boolean bIsText)
-    {
-        // Формируем идентификатор сообщения!!!
-        //m_stFINISH_ID_MSG = CCONSTANTS_EVENTS_JOB.MY_CURRENT_TEMP_USER_FOR_MSG +
-        //        CCONSTANTS_EVENTS_JOB.MY_SEPARATOR_MSG + newCurrDate.GetCurrLongTime();
-        //System.out.println("stFINISH_ID_MSG = " + m_stFINISH_ID_MSG);
-
-        CMessages bMessss = new CMessages();
-        bMessss.msg_body = stMsgBody;
-        if(bIsText)
-        {
-            bMessss.msg_is_text = "true";
-        }
-        else
-        {
-            bMessss.msg_is_text = "false";
-        }
-        bMessss.msg_status = stMsgStatus;
-        bMessss.msg_time = newCurrDate.GetPrintTime(newCurrDate.GetCurrLongTime());
-        bMessss.msg_title = stMsgTitle;
-        bMessss.msg_to_user = CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER_MyPhoneID;
-        bMessss.msg_unix_time = newCurrDate.GetCurrLongTime();
-
-
-
-		/* mDatabaseTemp.child(m_stFINISH_ID_MSG).child("msg_body").setValueAsync(stMsgBody);
-		 mDatabaseTemp.child(m_stFINISH_ID_MSG).child("msg_status").setValueAsync(stMsgStatus);
-		 mDatabaseTemp.child(m_stFINISH_ID_MSG).child("msg_time").
-		 setValueAsync(newCurrDate.GetPrintTime(newCurrDate.GetCurrLongTime()));
-		 mDatabaseTemp.child(m_stFINISH_ID_MSG).child("msg_unix_time").setValueAsync(newCurrDate.GetCurrLongTime());
-		 mDatabaseTemp.child(m_stFINISH_ID_MSG).child("msg_title").setValueAsync(stMsgBody);*/
-
-		 /*if(bIsText)
-		 {
-			 mDatabaseTemp.child(m_stFINISH_ID_MSG).child("msg_is_text").setValueAsync("true");
-		 }
-		 else
-		 {
-			 mDatabaseTemp.child(m_stFINISH_ID_MSG).child("msg_is_text").setValueAsync("false");
-		 }*/
-
-        //mDatabaseTemp.child(m_stFINISH_ID_MSG).child("msg_to_user").setValueAsync(CCONSTANTS_EVENTS_JOB.MY_CURRENT_TEMP_USER_FOR_MSG);
-        String uploadId = mDatabaseTemp.push().getKey();
-        mDatabaseTemp.child(CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER_MyPhoneID).child(uploadId).setValue(bMessss);
-
-        editTextOutMsg.setText("");
-        System.out.println("Типа послали сообщение!!!");
     }
 }

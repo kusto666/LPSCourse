@@ -26,6 +26,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -110,11 +112,30 @@ public class FileInOutFragment extends Fragment
 
     private void chooseImage()
     {
-        Intent intent = new Intent();
-       /* intent.setType("image/*");*/
-        intent.setType("file/*");
+
+        Intent intent = new Intent();// Старый вар.
+        intent.setType("*/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Выберите документ"), PICK_IMAGE_REQUEST);
+       /* String path = "/";
+        Intent intent = getContext().getPackageManager().getLaunchIntentForPackage("com.estrongs.android.pop");
+
+
+        if (intent != null) {
+            // If the application is avilable
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            Uri uri = Uri.parse(path);
+            intent.setDataAndType(uri, "resource/folder");
+            this.startActivity(intent);
+        }
+        else {
+            // Play store to install app
+            intent = new Intent(Intent.ACTION_VIEW);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setData(Uri.parse("market://details?id=" +
+                    "com.estrongs.android.pop"));
+            this.startActivity(intent);
+        }*/
     }
 
     @Override
@@ -179,16 +200,25 @@ public class FileInOutFragment extends Fragment
                 {
                     if (task.isSuccessful())
                     {
-                        Upload upload;// Объект для загрузки в realbase!!!
                         Uri downloadUri = task.getResult();
-                        upload = new Upload(editTextName.getText().toString(),
-                                downloadUri.toString(),
-                                downloadUri.toString());
+                        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference()
+                                .child("message_to_android");
+                        CDateTime newCurrDate = new CDateTime(); // Берем текущее время для записи в базу!!!
+                        CMessages.SendingMsgOrFile(mDatabase, newCurrDate,downloadUri.toString(),
+                                "no_read",editTextName.getText().toString(), false, null);
+
+
+
+                       // Upload upload;// Объект для загрузки в realbase!!!
+                       // downloadUri = task.getResult();
+                        //upload = new Upload(editTextName.getText().toString(),
+                        //        downloadUri.toString(),
+                         //       downloadUri.toString());
                                    //* taskSnapshot.getUploadSessionUri().toString());*//*
 
                         //adding an upload to firebase database
-                        String uploadId = MainActivity.mDatabase.push().getKey();
-                        MainActivity.mDatabase.child("my_files").child(uploadId).setValue(upload);
+                        //String uploadId = MainActivity.mDatabase.push().getKey();
+                        //MainActivity.mDatabase.child("my_files").child(uploadId).setValue(upload);
                         progressDialog.dismiss();
                         Toast.makeText(getActivity().getApplicationContext(), "Файл отправлен!", Toast.LENGTH_SHORT).show();
                     } else {

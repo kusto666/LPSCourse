@@ -1,11 +1,13 @@
 package com.dlkustovmylocatorgps.dmitry.mygpsone;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,13 +30,17 @@ import com.google.firebase.database.ValueEventListener;
 public class AuthActivity extends BaseActivity implements
         View.OnClickListener
 {
+    SharedPreferences sPref;
+    final String SAVED_LOGIN = "saved_login";
+    final String SAVED_PASS = "saved_pass";
 
     private static final String TAG = "EmailPassword";
 
-    private TextView mStatusTextView;
-    private TextView mDetailTextView;
+    //private TextView mStatusTextView;
+    //private TextView mDetailTextView;
     private EditText mEmailField;
     private EditText mPasswordField;
+    private CheckBox chBoxIsSaveLoginPass;
 
     // [START declare_auth]
     private FirebaseAuth mAuth;
@@ -48,21 +54,26 @@ public class AuthActivity extends BaseActivity implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_second);
+        setContentView(R.layout.activity_login);
 
         // Views
-        mStatusTextView = (TextView) findViewById(R.id.status);
-        mDetailTextView = (TextView) findViewById(R.id.detail);
+        //mStatusTextView = (TextView) findViewById(R.id.status);
+        //mDetailTextView = (TextView) findViewById(R.id.detail);
         mEmailField = (EditText) findViewById(R.id.field_email);
         /*mEmailField.setText("portkimry.commers@gmail.com");*/
-        mEmailField.setText("test1@gmail.com");
+        //mEmailField.setText("test1@gmail.com");
         mPasswordField = (EditText) findViewById(R.id.field_password);
         /*mPasswordField.setText("761set31");*/
-        mPasswordField.setText("111111");
+        //mPasswordField.setText("111111");
+        chBoxIsSaveLoginPass = (CheckBox) findViewById(R.id.chBoxIsSaveLoginPass);
+        chBoxIsSaveLoginPass.setChecked(true);
         // Buttons
         findViewById(R.id.email_sign_in_button).setOnClickListener(this);
-        findViewById(R.id.email_create_account_button).setOnClickListener(this);
-        findViewById(R.id.sign_out_button).setOnClickListener(this);
+
+        loadText();
+
+        //findViewById(R.id.email_create_account_button).setOnClickListener(this);
+       // findViewById(R.id.sign_out_button).setOnClickListener(this);
 
         // [START initialize_auth]
         mAuth = FirebaseAuth.getInstance();
@@ -158,6 +169,7 @@ public class AuthActivity extends BaseActivity implements
                         //Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
                         if (task.isSuccessful())
                         {
+                            saveText();
                             Intent intent =  new Intent(AuthActivity.this, MainActivity.class);
                             finish();
                             startActivity(intent);
@@ -215,12 +227,12 @@ public class AuthActivity extends BaseActivity implements
                         if (!task.isSuccessful()) {
                             Log.w(TAG, "signInWithEmail:failed", task.getException());
                             Toast.makeText(AuthActivity.this, R.string.auth_failed,
-                                    Toast.LENGTH_SHORT).show();
+                                    Toast.LENGTH_LONG).show();
                         }
 
                         // [START_EXCLUDE]
                         if (!task.isSuccessful()) {
-                            mStatusTextView.setText(R.string.auth_failed);
+                            //mStatusTextView.setText(R.string.auth_failed);
                         }
                         hideProgressDialog();
                         // [END_EXCLUDE]
@@ -269,34 +281,65 @@ public class AuthActivity extends BaseActivity implements
 
            // Это новый вариант пока!!!
             updateUI(null);
-            mStatusTextView.setText(R.string.signed_out);
-            mDetailTextView.setText(null);
+          //  mStatusTextView.setText(R.string.signed_out);
+          //  mDetailTextView.setText(null);
 
             findViewById(R.id.email_password_buttons).setVisibility(View.VISIBLE);
             findViewById(R.id.email_password_fields).setVisibility(View.VISIBLE);
-            findViewById(R.id.sign_out_button).setVisibility(View.GONE);
+        //    findViewById(R.id.sign_out_button).setVisibility(View.GONE);
         }
         else
         {
-            mStatusTextView.setText(R.string.signed_out);
-            mDetailTextView.setText(null);
+          //  mStatusTextView.setText(R.string.signed_out);
+         //   mDetailTextView.setText(null);
 
             findViewById(R.id.email_password_buttons).setVisibility(View.VISIBLE);
             findViewById(R.id.email_password_fields).setVisibility(View.VISIBLE);
-            findViewById(R.id.sign_out_button).setVisibility(View.GONE);
+        //    findViewById(R.id.sign_out_button).setVisibility(View.GONE);
         }
     }
 
     @Override
     public void onClick(View v) {
-        int i = v.getId();
+        /*int i = v.getId();
         if (i == R.id.email_create_account_button) {
             createAccount(mEmailField.getText().toString(), mPasswordField.getText().toString());
         } else if (i == R.id.email_sign_in_button) {
             signIn(mEmailField.getText().toString(), mPasswordField.getText().toString());
         } else if (i == R.id.sign_out_button) {
             signOut();
+        }*/
+        signIn(mEmailField.getText().toString(), mPasswordField.getText().toString());
+    }
+    // Сохраняем данные ввода(логин, пароль)
+    void saveText()
+    {
+        if(chBoxIsSaveLoginPass.isChecked())
+        {
+            sPref = getPreferences(MODE_PRIVATE);
+            SharedPreferences.Editor ed = sPref.edit();
+            ed.putString(SAVED_LOGIN, mEmailField.getText().toString());
+            ed.putString(SAVED_PASS, mPasswordField.getText().toString());
+            ed.commit();
+            Toast.makeText(this, "Login and Pass SAVED!!!", Toast.LENGTH_LONG).show();
+        }
+        else
+        {
+            sPref = getPreferences(MODE_PRIVATE);
+            SharedPreferences.Editor ed = sPref.edit();
+            ed.putString(SAVED_LOGIN, "");
+            ed.putString(SAVED_PASS, "");
+            ed.commit();
+            Toast.makeText(this, "Login and Pass NOT SAVED!!!", Toast.LENGTH_LONG).show();
         }
     }
-
+    // Загружаем данные логин и пароль
+    void loadText() {
+        sPref = getPreferences(MODE_PRIVATE);
+        String savedText = sPref.getString(SAVED_LOGIN, "");
+        mEmailField.setText(savedText);
+        savedText = sPref.getString(SAVED_PASS, "");
+        mPasswordField.setText(savedText);
+        Toast.makeText(this, "Login and Pass IS LOADED!!!", Toast.LENGTH_SHORT).show();
+    }
 }

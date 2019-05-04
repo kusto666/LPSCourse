@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/fragment_massages_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="60dp"
+    android:background="@color/common_google_signin_btn_text_dark_default"
     android:orientation="vertical">
 
     <ListView
@@ -25,30 +25,7 @@
         android:editable="false"
         android:text="Входящие сообщение"
         android:textAlignment="center"
-        android:textColor="@color/colorAccent"
-        android:textSize="24sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/textViewIncoming"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginRight="10dp"
-        android:scrollbarAlwaysDrawHorizontalTrack="true"
-        android:scrollbarAlwaysDrawVerticalTrack="true" />
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="180dp"
-        android:text="Отправить текст"
-        android:textAlignment="center"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/color_red"
         android:textSize="24sp"
         android:textStyle="bold" />
 
@@ -66,7 +43,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp" />
+            android:layout_marginRight="10dp"
+            android:hint="Нажмите сюда для ввода сообщения!!!" />
 
     </android.support.design.widget.TextInputLayout>
 
@@ -77,9 +55,9 @@
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="185dp"
         android:layout_weight="0"
-        android:text="Отправить" />
+        android:text="Отправить сообщение" />
 
     <Button
         android:id="@+id/buttonUploadFile"
@@ -90,7 +68,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"
-        android:text="Загрузка" />
+        android:text="Загрузить и отправить файл" />
 
     <ProgressBar
         android:id="@+id/progressbar"
