@@ -46,7 +46,7 @@ import java.util.ArrayList;
 
 
 public class MessagesFragmentMain extends Fragment {
-    private Button btnClick;
+    private Button btnClick;// Кнопка отправки сообщения!!!
     private Button buttonUploadFile;
     private EditText editTextOutMsg;
    // private TextView editTextIncomingMsg;
@@ -241,7 +241,14 @@ public class MessagesFragmentMain extends Fragment {
                         @Override
                         public void onItemClick(AdapterView<?> adapter, View v, int position, long id) {
                             Log.i("mPosMesg.msg_body = ", "-------------------------");
-                           final CMessages mPosMesg = (CMessages) adapter.getItemAtPosition(position);
+                            final CMessages mPosMesg = (CMessages) adapter.getItemAtPosition(position);
+
+                            ///////////////////////////////////////////////////////////////////////////
+                            // Здесь для сообщения сразу изменим что он теперь прочитано при клике на его тело сообщения!
+                            // И не важно файл это или просто текст, нам надо пометить его прочитанным!!!
+
+                            ///////////////////////////////////////////////////////////////////////////
+
                         if(mPosMesg.msg_is_text.equals("false"))
                         {
                             new AlertDialog.Builder(getContext())
