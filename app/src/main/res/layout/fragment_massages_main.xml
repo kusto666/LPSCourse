@@ -7,6 +7,8 @@
     android:background="@color/common_google_signin_btn_text_dark_default"
     android:orientation="vertical">
 
+
+
     <ListView
         android:id="@+id/ListUsersMsg"
         android:layout_width="match_parent"
@@ -23,7 +25,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"
         android:editable="false"
-        android:text="Входящие сообщение"
+        android:text="Сообщения"
         android:textAlignment="center"
         android:textColor="@color/color_red"
         android:textSize="24sp"

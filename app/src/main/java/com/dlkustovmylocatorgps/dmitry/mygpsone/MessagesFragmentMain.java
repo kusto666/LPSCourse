@@ -267,7 +267,7 @@ public class MessagesFragmentMain extends Fragment {
                                                     "https://firebasestorage.googleapis.com/v0/b/mygpsone-kusto1.appspot.com/o/uploads%2FScreenshot_2017-10-03-09-38-30-734_com.dlkustovmindcleaner.dmitry.mindcleaner.jpg?alt=media");*/
                                             Log.i("mPosMesg.msg_body = ", mPosMesg.msg_body);
                                             StorageReference storageRef = MessagesFragmentMain.m_myStorage.getReferenceFromUrl(mPosMesg.msg_body);
-                                            File rootPath = new File(Environment.getExternalStorageDirectory(), "DCIM/MyFIREBASE");// Это пока временно
+                                            File rootPath = new File(Environment.getExternalStorageDirectory(), "DCIM/Download");// Это пока временно
                                             // Для проверки скачивания!!! Надо изменить на выбор через проводник(файловый менеджер)
                                             if(!rootPath.exists()) {
                                                 rootPath.mkdirs();
@@ -284,6 +284,17 @@ public class MessagesFragmentMain extends Fragment {
                                                         //  updateDb(timestamp,localFile.toString(),position);
                                                         progressDialog.dismiss();
                                                         Toast.makeText(getActivity().getApplicationContext(), "Файл скачан!", Toast.LENGTH_LONG).show();
+                                                        Intent intent = new Intent();
+                                                        intent.setAction(Intent.ACTION_VIEW);
+                                                        intent.setDataAndType(Uri.fromFile(new File(localFile.toString())), "image/*");
+                                                        startActivity(intent);
+
+                                                        /*Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                                                        intent.setType("image/*");
+
+                                                        Intent chooser = Intent.createChooser(intent, "Choose a Picture");
+                                                        chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                        startActivity(chooser);*/
                                                     }
                                                 }).addOnFailureListener(new OnFailureListener() {
                                                     @Override
