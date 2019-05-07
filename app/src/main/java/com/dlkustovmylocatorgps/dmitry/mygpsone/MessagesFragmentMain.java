@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -46,7 +47,7 @@ import java.util.ArrayList;
 
 
 public class MessagesFragmentMain extends Fragment {
-    private Button btnClick;
+    private Button btnClick;// Кнопка отправки сообщения!!!
     private Button buttonUploadFile;
     private EditText editTextOutMsg;
    // private TextView editTextIncomingMsg;
@@ -80,6 +81,9 @@ public class MessagesFragmentMain extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder(); //
+        StrictMode.setVmPolicy(builder.build());
+
         m_myStorage = FirebaseStorage.getInstance();
         m_myRootRef = m_myStorage.getReference();
         mStorageReference = m_myStorage.getReference();
@@ -241,7 +245,14 @@ public class MessagesFragmentMain extends Fragment {
                         @Override
                         public void onItemClick(AdapterView<?> adapter, View v, int position, long id) {
                             Log.i("mPosMesg.msg_body = ", "-------------------------");
-                           final CMessages mPosMesg = (CMessages) adapter.getItemAtPosition(position);
+                            final CMessages mPosMesg = (CMessages) adapter.getItemAtPosition(position);
+
+                            ///////////////////////////////////////////////////////////////////////////
+                            // Здесь для сообщения сразу изменим что он теперь прочитано при клике на его тело сообщения!
+                            // И не важно файл это или просто текст, нам надо пометить его прочитанным!!!
+
+                            ///////////////////////////////////////////////////////////////////////////
+
                         if(mPosMesg.msg_is_text.equals("false"))
                         {
                             new AlertDialog.Builder(getContext())
@@ -260,7 +271,7 @@ public class MessagesFragmentMain extends Fragment {
                                                     "https://firebasestorage.googleapis.com/v0/b/mygpsone-kusto1.appspot.com/o/uploads%2FScreenshot_2017-10-03-09-38-30-734_com.dlkustovmindcleaner.dmitry.mindcleaner.jpg?alt=media");*/
                                             Log.i("mPosMesg.msg_body = ", mPosMesg.msg_body);
                                             StorageReference storageRef = MessagesFragmentMain.m_myStorage.getReferenceFromUrl(mPosMesg.msg_body);
-                                            File rootPath = new File(Environment.getExternalStorageDirectory(), "DCIM/MyFIREBASE");// Это пока временно
+                                            File rootPath = new File(Environment.getExternalStorageDirectory(), "DCIM/Download");// Это пока временно
                                             // Для проверки скачивания!!! Надо изменить на выбор через проводник(файловый менеджер)
                                             if(!rootPath.exists()) {
                                                 rootPath.mkdirs();
@@ -277,6 +288,17 @@ public class MessagesFragmentMain extends Fragment {
                                                         //  updateDb(timestamp,localFile.toString(),position);
                                                         progressDialog.dismiss();
                                                         Toast.makeText(getActivity().getApplicationContext(), "Файл скачан!", Toast.LENGTH_LONG).show();
+                                                        Intent intent = new Intent();
+                                                        intent.setAction(Intent.ACTION_VIEW);
+                                                        intent.setDataAndType(Uri.fromFile(new File(localFile.toString())), "image/*");
+                                                        startActivity(intent);
+
+                                                        /*Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                                                        intent.setType("image/*");
+
+                                                        Intent chooser = Intent.createChooser(intent, "Choose a Picture");
+                                                        chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                        startActivity(chooser);*/
                                                     }
                                                 }).addOnFailureListener(new OnFailureListener() {
                                                     @Override
