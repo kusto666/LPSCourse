@@ -212,9 +212,9 @@ public class MessagesFragmentMain extends Fragment {
         catch (Exception ex)
         {
 
-            Toast.makeText(getContext(), "Ошибка на стороне сервера - не правильно создан пользователь\n" +
+            Toast.makeText(getContext(), "Ошибка на стороне сервера !- не правильно создан пользователь\n" +
                     "Обратитесь к службе диспетчеров организации!\n" +
-                    "CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER_MyPhoneID = " + CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER_MyPhoneID, Toast.LENGTH_SHORT).show();
+                    "CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER_MyPhoneID =>>> " + CMAINCONSTANTS.MY_CURRENT_ID_SYSUSER_MyPhoneID, Toast.LENGTH_SHORT).show();
             return null;
         }
         mDatabaseIncoming = FirebaseDatabase.getInstance()
