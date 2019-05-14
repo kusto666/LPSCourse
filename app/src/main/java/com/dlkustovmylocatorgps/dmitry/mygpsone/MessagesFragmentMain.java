@@ -200,6 +200,7 @@ public class MessagesFragmentMain extends Fragment {
                     e.getMessage();
                 }
                 Log.i("MsgActivity = ", "Типа послали сообщение!!!");
+
             }
         });
         try
